@@ -1,0 +1,1258 @@
+/* ====================================== */
+/* ============= IMPORTS ================ */
+/* ====================================== */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+/* ====================================== */
+/* ===== GLOBAL RESET & BASE STYLES ===== */
+/* ====================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Roboto, sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    background-color: #f5f5fa;
+}
+
+/* ====================================== */
+/* ============ TYPOGRAPHY ============== */
+/* ====================================== */
+.body-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    letter-spacing: 0.0178571429em;
+    color: #000000;
+}
+
+/* GRADIENT TEXT STYLES */
+/* These will be applied dynamically by JavaScript when a gradient is selected */
+/* Note: color: transparent is a fallback for browsers that don't support -webkit-text-fill-color */
+.tool-alarm span,
+.tool-timer span,
+.tool-stopwatch span,
+.tool-worldClock span {
+    /* Initial state for solid colors */
+    color: #000000;
+    /* Default properties for gradients - will be overwritten/activated by JS */
+    background-image: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    -webkit-text-fill-color: unset;
+    color: unset;
+    /* Ensure it resets if no gradient */
+}
+
+/* ====================================== */
+/* ========== PAGE WRAPPER ============= */
+/* ====================================== */
+.page-wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+/* ====================================== */
+/* ========== MAIN CONTENT ============== */
+/* ====================================== */
+.main-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    gap: 8px;
+    background-color: #f5f5fa;
+}
+
+/* ====================================== */
+/* ============= SIDEBAR ================ */
+/* ====================================== */
+
+/* Sidebar Wrapper */
+.sidebar-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: auto;
+    height: 100%;
+}
+
+/* Desktop Sidebar */
+.sidebar-wrapper.desktop-sidebar .sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: auto;
+    height: 100%;
+    padding: 8px;
+    gap: 8px;
+    border: 1px solid #00000020;
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+/* Mobile Sidebar */
+.sidebar-wrapper.mobile-sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.sidebar-wrapper.mobile-sidebar .sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: auto;
+    height: 100%;
+    padding: 8px;
+    gap: 8px;
+    background-color: #ffffff;
+    border-top: 0;
+    border-right: 1px solid #00000020;
+    border-bottom: 0;
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 12px;
+}
+
+/* Sidebar Components */
+.sidebar-top,
+.sidebar-bottom {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+}
+
+.sidebar-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Sidebar Buttons */
+.sidebar-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #00000020;
+    border-radius: 8px;
+    outline: none;
+    background-color: transparent;
+    cursor: pointer;
+    user-select: none;
+}
+
+.sidebar-button:hover {
+    background-color: #f5f5fa;
+}
+
+.sidebar-button.active {
+    border-color: #000000;
+    background-color: #000000;
+    color: #ffffff;
+}
+
+/* Sidebar Separator */
+.sidebar .separator {
+    width: 35px;
+    height: 1px;
+    border-radius: 50px;
+    background-color: #00000020;
+}
+
+/* ====================================== */
+/* ========== GENERAL CONTENT =========== */
+/* ====================================== */
+.general-content {
+    position: relative;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    border: 1px solid #00000020;
+    border-radius: 12px;
+    background-color: #ffffff;
+}
+
+/* ====================================== */
+/* ========== CONTENT TOP =============== */
+/* ====================================== */
+.general-content-top {
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid #00000020;
+    z-index: 999;
+}
+
+/* ====================================== */
+/* =============== HEADER =============== */
+/* ====================================== */
+.header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    padding: 8px;
+    gap: 8px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+}
+
+/* Header Sections */
+.header-left {
+    display: flex;
+    flex: 0 0 auto;
+}
+
+.header-right {
+    position: relative;
+    display: flex;
+    flex: 0 0 auto;
+    z-index: 1;
+}
+
+/* Header Items */
+.header-item {
+    display: flex;
+    flex-direction: row;
+    width: auto;
+    height: 100%;
+    gap: 8px;
+}
+
+/* Header Buttons */
+.header-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 auto;
+    border: 1px solid #00000020;
+    border-radius: 8px;
+    outline: none;
+    background-color: transparent;
+    cursor: pointer;
+    user-select: none;
+}
+
+.header-button:hover {
+    background-color: #f5f5fa;
+}
+
+.header-button.active {
+    background-color: #f5f5fa;
+}
+
+.header-button[data-module="toggleSidebarMovile"] {
+    display: none;
+}
+
+/* ====================================== */
+/* ======== CONTENT SCROLLEABLE ======== */
+/* ====================================== */
+.general-content-scrolleable {
+    position: relative;
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.general-content-bottom {
+    position: relative;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    flex: 0 0 auto;
+}
+
+.scrollable-content {
+    width: 100%;
+    height: 100%;
+}
+
+/* ====================================== */
+/* =========== SECTIONS ================= */
+/* ====================================== */
+.section-content {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+}
+
+.section-everything,
+.section-alarm,
+.section-timer,
+.section-stopwatch,
+.section-worldClock {
+    flex: 1 1 auto;
+    flex-direction: column;
+    position: relative;
+}
+
+.section-top {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex: 0 0 auto;
+    gap: 8px;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 8px;
+    border-bottom: 1px solid #00000020;
+}
+
+.section-top .separator {
+    flex: 0 0 auto;
+    width: 1px;
+    height: 35px;
+    border-radius: 50px;
+    background-color: #00000020;
+}
+
+.section-center {
+    width: 100%;
+    height: auto;
+    padding: 92px 16px;
+    border-bottom: 1px solid #00000020;
+}
+
+.section-bottom {
+    flex: 1;
+    padding: 8px;
+}
+
+/* ====================================== */
+/* ========= MODULES & OVERLAYS ========= */
+/* ====================================== */
+.module-control-center {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 5px;
+    z-index: 999;
+    width: 320px;
+    height: auto;
+}
+
+.menu-control-center {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    padding: 8px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background-color: #ffffff;
+    filter: drop-shadow(0 4px 12px #00000020);
+    color: #000000;
+}
+
+/* Module Overlays (Palette, Alarm, Timer, World Clock) */
+.module-overlay {
+    position: absolute;
+    z-index: 999;
+    width: 360px;
+    height: 100%;
+    padding: 8px;
+}
+
+.menu-alarm,
+.menu-timer,
+.menu-worldClock,
+.menu-paletteColors {
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background-color: #ffffff;
+    filter: drop-shadow(0 4px 12px #00000020);
+}
+
+/* Menu section specific styles (applies to control center & overlays) */
+.menu-section {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-section-top {
+    padding: 8px;
+    border-bottom: 1px solid #00000020;
+}
+
+.shadow {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    /* Sombra más suave y difusa */
+}
+
+.menu-section-center {
+    flex: 1 1 auto;
+    display: flex;
+    padding: 8px;
+    overflow: hidden;
+    gap: 8px;
+    flex-direction: column;
+}
+
+.menu-section-bottom {
+    width: 100%;
+    height: auto;
+    padding: 8px;
+    border-top: 1px solid #00000020;
+}
+
+/* ====================================== */
+/* =========== MENU LISTS (GENERAL) ===== */
+/* ====================================== */
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+    gap: 4px;
+    overflow: auto;
+    user-select: none;
+}
+
+.menu-link {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 40px;
+    flex: 0 0 auto;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #000000;
+}
+
+.menu-link:hover {
+    background-color: #f5f5fa;
+}
+
+.menu-link.active {
+    background-color: #f5f5fa;
+}
+
+.menu-link-icon {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 100%;
+}
+
+.menu-link-text {
+    display: block;
+    flex: 1 1 auto;
+    align-self: center;
+    overflow: hidden;
+    text-align: start;
+}
+
+.menu-link-text span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
+
+/* ====================================== */
+/* =========== MENU CONTENT (PALETTE) === */
+/* ====================================== */
+.menu-content-wrapper.active {
+    display: flex;
+    /* Show when active */
+}
+
+.menu-content-wrapper.disabled {
+    display: none;
+    /* Hide when disabled */
+}
+
+.menu-content {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.menu-content-header {
+    width: 100%;
+    height: 45px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    gap: 8px;
+    background-color: #ffffff;
+    border: 1px solid #00000020;
+    font-weight: 500;
+}
+
+.menu-content-general {
+    width: auto;
+    height: auto;
+}
+
+.color-wrapper {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    width: 100%;
+}
+
+.color-content {
+    aspect-ratio: 1;
+    position: relative;
+    width: 100%;
+    border: 1px solid #00000020;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.color {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    position: relative;
+}
+
+.color::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.2s ease;
+}
+
+/* Interactive Color States */
+.color-content:hover .color {
+    transform: scale(0.9);
+}
+
+.color-content:not(.active):hover .color::before {
+    border-color: #00000020;
+    opacity: 0.5;
+    transform: scale(1);
+}
+
+.color-content.active .color {
+    transform: scale(0.9);
+}
+
+.color-content.active .color::before {
+    border-color: #000000; /* Borde negro para modo claro */
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Color Definitions (specific shades) */
+.black-color {
+    background: #000000;
+}
+
+.darkgray-color {
+    background: #525252;
+}
+
+.mediumgray-color {
+    background: #757575;
+}
+
+.lightgray-color {
+    background: #a8a8a8;
+}
+
+.verylightgray-color {
+    background: #dbdbdb;
+}
+
+.white-color {
+    border: 1px solid #00000020;
+    background: #ffffff;
+}
+
+.brightred-color {
+    background: #ff2f2f;
+}
+
+.coralred-color {
+    background: #ff5555;
+}
+
+.pink-color {
+    background: #ff64c2;
+}
+
+.lavenderpink-color {
+    background: #ca6ae4;
+}
+
+.purple-color {
+    background: #8a50ff;
+}
+
+.violet-color {
+    background: #5c15e9;
+}
+
+.darkturquoise-color {
+    background: #0095b0;
+}
+
+.aquablue-color {
+    background: #0abedd;
+}
+
+.turquoiseblue-color {
+    background: #5adfe4;
+}
+
+.skyblue-color {
+    background: #36b4ff;
+}
+
+.royalblue-color {
+    background: #506fff;
+}
+
+.cobaltblue-color {
+    background: #0048ab;
+}
+
+.green-color {
+    background: #00bd61;
+}
+
+.grassgreen-color {
+    background: #7cd755;
+}
+
+.limegreen-color {
+    background: #bfff70;
+}
+
+.yellow-color {
+    background: #ffdc57;
+}
+
+.peach-color {
+    background: #ffb366;
+}
+
+.orange-color {
+    background: #ff8f4b;
+}
+
+/* ====================================== */
+/* ========= AUTO COLOR STYLES ========== */
+/* ====================================== */
+
+/* Auto Color Styles - COMPLETAMENTE CORREGIDO */
+.auto-color {
+    background-color: #000000; /* Fondo negro (muestra color del texto en tema claro) */
+ 
+    position: relative;
+}
+
+/* Auto color indicator text styling */
+.auto-color span {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    color: #ffffff; /* Texto blanco sobre fondo negro */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* ========== CORRECCIÓN DEL PSEUDO-ELEMENTO ::before PARA AUTO-COLOR ========== */
+
+
+
+/* ========== AUTO COLOR HOVER/ACTIVE - CORREGIDO ========== */
+
+/* Color validation warning styles */
+.color-content.invalid-for-theme {
+    opacity: 0.5;
+    position: relative;
+}
+
+.color-content.invalid-for-theme::before {
+    content: '⚠';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(255, 152, 0, 0.9);
+    color: white;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    font-weight: bold;
+}
+
+/* Auto color nunca debería ser inválido */
+.color-content.invalid-for-theme .auto-color {
+    opacity: 1;
+}
+
+.color-content.invalid-for-theme .auto-color::before {
+    display: none;
+}
+
+/* NEW: Styles for gradient color previews */
+.color.gradient-preview {
+    background-color: transparent !important;
+    /* Ensure no solid background */
+    border: 1px solid #00000020;
+    /* Default border for light theme */
+    background-size: 150% 100%;
+    /* Extend background to smooth corners */
+    background-position: center;
+    /* Center the extended background */
+}
+
+.menu-content-scrolleable {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+/* ====================================== */
+/* ============== SEARCH ================ */
+/* ====================================== */
+.search-content {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #00000020;
+    border-radius: 8px;
+}
+
+.search-content-icon {
+    display: flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    align-items: center;
+    width: 45px;
+    height: 100%;
+}
+
+.search-content-text {
+    display: flex;
+    flex: 1 1 auto;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.search-content-text>input {
+    width: 100%;
+    height: 90%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #000000;
+    /* Default text color for input */
+}
+
+/* ====================================== */
+/* ========== TOOL OPTIONS ============== */
+/* ====================================== */
+.tool-options-wrapper {
+    position: relative;
+    width: 100%;
+    overflow-x: auto;
+    gap: 8px;
+    overflow-y: hidden;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.tool-options-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.tool-options-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    width: max-content;
+    min-width: auto;
+    height: auto;
+    gap: 8px;
+    user-select: none;
+}
+
+.tool-options-content::-webkit-scrollbar {
+    height: 8px;
+}
+
+.tool-options-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.tool-options-content::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: #00000080;
+}
+
+.tool-options-content::-webkit-scrollbar-thumb:hover {
+    background: #000000;
+}
+
+.tool-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.increse-font-zise {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    width: 100%;
+    max-width: max-content;
+    height: 40px;
+    overflow: hidden;
+    border: 1px solid #00000020;
+    border-radius: 8px;
+}
+
+.increse-font-zise-left,
+.increse-font-zise-right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: 100%;
+    padding: 0 4px;
+    color: #000000;
+    cursor: pointer;
+}
+
+.increse-font-zise-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 0 8px;
+    color: #000000;
+    white-space: nowrap;
+}
+
+.increse-font-zise-left:hover,
+.increse-font-zise-right:hover {
+    background-color: #f5f5fa;
+}
+
+.scroll-btn {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    height: 35px;
+    border: 1px solid #00000020;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    transform: translateY(-50%);
+}
+
+.scroll-btn:hover {
+    background-color: #f5f5fa;
+}
+
+.scroll-btn-left {
+    left: 3px;
+}
+
+.scroll-btn-right {
+    right: 3px;
+}
+
+.tool-alarm,
+.tool-timer,
+.tool-stopwatch,
+.tool-worldClock {
+    flex: 1 1 auto;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* ====================================== */
+/* ============ DRAG HANDLE ============= */
+/* ====================================== */
+.pill-container {
+    display: none;
+    justify-content: center;
+    width: 100%;
+    padding: 8px 0;
+}
+
+.drag-handle {
+    position: relative;
+    display: flex;
+    width: 52px;
+    height: 4px;
+    border-radius: 50px;
+    background-color: #f5f5fa;
+    cursor: pointer;
+}
+
+/* ====================================== */
+/* ============== TOOLTIP =============== */
+/* ====================================== */
+.tooltip {
+    position: relative;
+    z-index: 999;
+    display: none;
+    box-sizing: border-box;
+    width: auto;
+    min-width: 100px;
+    padding: 4px 12px;
+    border: 1px solid #252627;
+    border-radius: 8px;
+    background-color: #252627;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: 0.0178571429em;
+    text-align: center;
+}
+
+/* Tooltip Arrows */
+.tooltip::before {
+    content: "";
+    position: absolute;
+    border: 1px solid #252627;
+    background-color: #252627;
+}
+
+/* Arrow positioning by placement */
+.tooltip[data-popper-placement^="bottom"]::before {
+    top: -6px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-bottom: none;
+    border-right: none;
+    border-radius: 2px 0 0 0;
+    transform: translateX(-50%) rotate(45deg);
+}
+
+.tooltip[data-popper-placement^="top"]::before {
+    bottom: -6px;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    border-top: none;
+    border-left: none;
+    border-radius: 0 0 2px 0;
+    transform: translateX(-50%) rotate(45deg);
+}
+
+.tooltip[data-popper-placement^="right"]::before {
+    top: 50%;
+    left: -6px;
+    width: 10px;
+    height: 10px;
+    border-right: none;
+    border-top: none;
+    border-radius: 0 0 0 2px;
+    transform: translateY(-50%) rotate(45deg);
+}
+
+.tooltip[data-popper-placement^="left"]::before {
+    top: 50%;
+    right: -6px;
+    width: 10px;
+    height: 10px;
+    border-left: none;
+    border-bottom: none;
+    border-radius: 0 2px 0 0;
+    transform: translateY(-50%) rotate(45deg);
+}
+
+/* ====================================== */
+/* ============ ANIMATIONS ============== */
+/* ====================================== */
+.menu-link-icon .material-symbols-rounded.spinning {
+    animation: spin 1s linear infinite;
+    color: #000000;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ====================================== */
+/* ============== STATES ================ */
+/* ====================================== */
+.active {
+    display: flex;
+}
+
+.disabled {
+    display: none;
+}
+
+.preview-active {
+    opacity: 0.5;
+    background-color: #f5f5fa;
+}
+
+.disabled-interactive {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ====================================== */
+/* ============= UTILITIES ============== */
+/* ====================================== */
+.overflow-y {
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: none;
+    scrollbar-width: thin;
+    scrollbar-color: #00000080 transparent;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+.overflow-x {
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior: none;
+    scrollbar-width: thin;
+    scrollbar-color: #00000080 transparent;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* ====================================== */
+/* ========== MEDIA QUERIES ============ */
+/* ====================================== */
+
+/* Desktop */
+@media (min-width: 768px) {
+    .sidebar-wrapper.mobile-sidebar .sidebar {
+        display: none;
+    }
+}
+
+/* Tablet and smaller */
+@media (max-width: 768px) {
+    .sidebar-wrapper.desktop-sidebar {
+        display: none;
+    }
+
+    .header-button[data-module="toggleSidebarMovile"] {
+        display: flex;
+    }
+}
+
+/* Mobile */
+@media (max-width: 468px) {
+    .module-control-center {
+        position: fixed;
+        top: 0;
+        left: 0;
+        justify-content: center;
+        align-items: flex-end;
+        width: 100%;
+        height: 100%;
+        background-color: #00000080;
+    }
+
+    .menu-control-center {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: 0;
+        padding-top: 0;
+    }
+
+    .pill-container {
+        display: flex;
+    }
+
+    .module-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        justify-content: center;
+        align-items: flex-end;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        background-color: #00000080;
+    }
+
+    .menu-paletteColors,
+    .menu-alarm,
+    .menu-timer,
+    .menu-worldClock {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        border-bottom: 0;
+        padding-top: 0;
+        height: auto;
+        max-height: 85%;
+    }
+}
+
+/* ====================================== */
+/* ========= COLLAPSIBLE SECTIONS ======= */
+/* ====================================== */
+
+.menu-content-header-primary {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+}
+
+.menu-content-header-secondary {
+    width: auto;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.collapse-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: #000000;
+    transition: background-color 0.2s ease;
+}
+
+.collapse-btn:hover {
+    background-color: #f5f5fa;
+}
+
+.collapse-btn .expand-icon {
+    transition: transform 0.3s ease;
+}
+
+/* Collapsed state - NO TRANSITION */
+.menu-content-general.collapsed {
+    max-height: 0;
+    overflow: hidden;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0;
+}
+
+/* Expanded state - NO TRANSITION */
+.menu-content-general.expanded {
+    max-height: none;
+    opacity: 1;
+}
+
+/* Previous styles */
+.menu-content-general {
+    width: auto;
+    height: auto;
+    padding-bottom: 0;
+    padding-top: 8px;
+}
+
+.menu-content-wrapper {
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ====================================== */
+/* ========= TEXT STYLES ================ */
+/* ====================================== */
+
+.bold-mode {
+    font-weight: bold;
+}
+
+.italic-mode {
+    font-style: italic;
+}
