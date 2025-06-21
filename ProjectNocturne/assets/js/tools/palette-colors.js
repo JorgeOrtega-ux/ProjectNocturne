@@ -112,11 +112,16 @@ function handleThemeColorCompatibility() {
     colorSystemState.isThemeChanging = true;
 
     if (colorSystemState.currentColor === 'auto') {
+        // ✅ MEJORADO: Aplicar auto color y luego renderizar recientes
         applyAutoColor();
+        
+        // Renderizar recientes después de un pequeño delay
+        setTimeout(() => {
+            renderRecentColors('theme_change');
+        }, 100);
     } else if (isGradientColor(colorSystemState.currentColor)) {
         applyColorToElements(colorSystemState.currentColor);
-    }
-    else {
+    } else {
         if (!isValidForTheme(colorSystemState.currentColor)) {
             console.log('🎨 Current color', colorSystemState.currentColor, 'is not compatible with new theme, switching to auto');
 
@@ -126,13 +131,11 @@ function handleThemeColorCompatibility() {
             localStorage.setItem(COLOR_SYSTEM_CONFIG.storageKey, 'auto');
             localStorage.setItem(COLOR_SYSTEM_CONFIG.activeColorKey, 'auto');
             localStorage.setItem(COLOR_SYSTEM_CONFIG.activeColorSectionKey, 'auto');
-
-            const autoElement = document.querySelector('.color-content[data-color="auto"]');
-            if (autoElement) {
-                setActiveColorInAllSections(autoElement);
-            }
-
-            dispatchColorChangeEvent({ hex: 'auto', name: 'auto' });
+            
+            // Renderizar recientes después de cambiar a auto
+            setTimeout(() => {
+                renderRecentColors('theme_change');
+            }, 100);
         } else {
             applyColorToElements(colorSystemState.currentColor);
         }
@@ -140,7 +143,7 @@ function handleThemeColorCompatibility() {
 
     setTimeout(() => {
         colorSystemState.isThemeChanging = false;
-    }, 100);
+    }, 200);
 }
 
 function isValidForTheme(hex) {
@@ -170,9 +173,20 @@ function applyAutoColor() {
     const autoColorHex = getAutoColor();
     applyColorToElements(autoColorHex);
 
+    // ✅ MEJORADO: Solo agregar a recientes si no estamos inicializando
+    if (colorSystemState.isInitialized) {
+        const autoColorName = getTranslation('auto', 'tooltips');
+        addToRecentColors(autoColorHex, autoColorName, 'auto', true);
+    }
+
     const autoElement = document.querySelector('.color-content[data-color="auto"]');
     if (autoElement) {
         setActiveColorInAllSections(autoElement);
+    }
+
+    // Solo disparar evento si está inicializado
+    if (colorSystemState.isInitialized) {
+        dispatchColorChangeEvent({ hex: autoColorHex, name: 'auto' });
     }
 }
 
@@ -234,10 +248,14 @@ function initColorTextSystem() {
 function setupThemeChangeListener() {
     document.addEventListener('themeChanged', (e) => {
         if (updateCurrentTheme()) {
-            updateColorTooltips();
-            renderGradientColors();
-            applyCollapsedSectionsState();
-            setupCollapsibleSections();
+            setTimeout(() => {
+                updateColorTooltips();
+                renderGradientColors();
+                // ✅ IMPORTANTE: Renderizar recientes después del cambio de tema
+                renderRecentColors('theme_change');
+                applyCollapsedSectionsState();
+                setupCollapsibleSections();
+            }, 200);
         }
     });
 
@@ -245,10 +263,13 @@ function setupThemeChangeListener() {
         mutations.forEach((mutation) => {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 if (updateCurrentTheme()) {
-                    updateColorTooltips();
-                    renderGradientColors();
-                    applyCollapsedSectionsState();
-                    setupCollapsibleSections();
+                    setTimeout(() => {
+                        updateColorTooltips();
+                        renderGradientColors();
+                        renderRecentColors('theme_change');
+                        applyCollapsedSectionsState();
+                        setupCollapsibleSections();
+                    }, 200);
                 }
             }
         });
@@ -259,7 +280,6 @@ function setupThemeChangeListener() {
         attributeFilter: ['class']
     });
 }
-
 function setupLanguageChangeListener() {
     document.addEventListener('languageChanged', (e) => {
         console.log('🌐 Language changed detected in color system:', e.detail);
@@ -386,31 +406,42 @@ function loadStoredData() {
 
         const storedRecents = localStorage.getItem(COLOR_SYSTEM_CONFIG.recentColorsKey);
         if (storedRecents) {
-            colorSystemState.recentColors = JSON.parse(storedRecents);
+            // ✅ ARREGLO: Validar que el JSON no esté corrupto
+            try {
+                const parsedRecents = JSON.parse(storedRecents);
+                if (Array.isArray(parsedRecents) && parsedRecents.length > 0) {
+                    colorSystemState.recentColors = parsedRecents;
+                } else {
+                    // Si está vacío o corrupto, inicializar con color auto
+                    initializeDefaultRecentColors();
+                }
+            } catch (parseError) {
+                console.warn('Error parsing recent colors from localStorage:', parseError);
+                initializeDefaultRecentColors();
+            }
         } else {
-            const autoColorHex = getAutoColor();
-            const autoColorName = autoColorHex === '#ffffff' ? 'white' : 'black';
-
-            colorSystemState.recentColors = [{
-                hex: autoColorHex,
-                name: autoColorName,
-                timestamp: Date.now()
-            }];
-            saveRecentColors();
+            // No hay colores recientes guardados, inicializar
+            initializeDefaultRecentColors();
         }
     } catch (error) {
         console.error('Error loading stored data for color system:', error);
         colorSystemState.currentColor = 'auto';
-        const autoColorHex = getAutoColor();
-        const autoColorName = autoColorHex === '#ffffff' ? 'white' : 'black';
-
-        colorSystemState.recentColors = [{
-            hex: autoColorHex,
-            name: autoColorName,
-            timestamp: Date.now()
-        }];
+        initializeDefaultRecentColors();
     }
 }
+
+function initializeDefaultRecentColors() {
+    const autoColorHex = getAutoColor();
+    const autoColorName = getTranslation('auto', 'tooltips');
+
+    colorSystemState.recentColors = [{
+        hex: autoColorHex,
+        name: autoColorName,
+        timestamp: Date.now()
+    }];
+    saveRecentColors();
+}
+
 
 function saveColor(color, colorHex, colorNameForRecent, section) {
     try {
@@ -425,14 +456,25 @@ function saveColor(color, colorHex, colorNameForRecent, section) {
 
 function saveRecentColors() {
     try {
-        localStorage.setItem(COLOR_SYSTEM_CONFIG.recentColorsKey, JSON.stringify(colorSystemState.recentColors));
+        // ✅ ARREGLO: Validar que el array no esté vacío antes de guardar
+        if (Array.isArray(colorSystemState.recentColors) && colorSystemState.recentColors.length > 0) {
+            const jsonString = JSON.stringify(colorSystemState.recentColors);
+            localStorage.setItem(COLOR_SYSTEM_CONFIG.recentColorsKey, jsonString);
+            
+            // ✅ DEBUG: Verificar que se guardó correctamente
+            const verification = localStorage.getItem(COLOR_SYSTEM_CONFIG.recentColorsKey);
+            if (!verification) {
+                console.error('❌ Failed to save recent colors to localStorage');
+            }
+        } else {
+            console.warn('⚠️ Attempted to save empty recent colors array');
+        }
     } catch (error) {
-        console.error('Error saving recent colors:', error);
+        console.error('❌ Error saving recent colors to localStorage:', error);
     }
 }
 
 // ========== IMPROVED RECENT COLORS MANAGEMENT ==========
-
 function addToRecentColors(colorHex, colorNameForRecent, source = 'manual', forceMoveToFront = false) {
     let actualHex = colorHex;
     let actualName = colorNameForRecent;
@@ -451,9 +493,7 @@ function addToRecentColors(colorHex, colorNameForRecent, source = 'manual', forc
         }
     }
 
-
     const existingIndex = colorSystemState.recentColors.findIndex(color => color.hex === actualHex);
-
     const shouldMoveToFront = forceMoveToFront || COLOR_SYSTEM_CONFIG.moveRecentToFront;
 
     let needsReRender = false;
@@ -482,8 +522,14 @@ function addToRecentColors(colorHex, colorNameForRecent, source = 'manual', forc
         if (colorSystemState.recentColors.length > COLOR_SYSTEM_CONFIG.maxRecentColors) {
             colorSystemState.recentColors = colorSystemState.recentColors.slice(0, COLOR_SYSTEM_CONFIG.maxRecentColors);
         }
+        
+        // ✅ ARREGLO CRÍTICO: Guardar siempre, renderizar condicionalmente
         saveRecentColors();
-        renderRecentColors(source);
+        
+        // Solo renderizar si no estamos en medio de un cambio de tema
+        if (source !== 'theme_change' && !colorSystemState.isThemeChanging) {
+            renderRecentColors(source);
+        }
     }
 }
 
