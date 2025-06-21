@@ -135,6 +135,7 @@
 
 /* Menu Content (Palette) */
 .dark-mode .menu-content-header {
+    border-color: #ffffff20;
     background-color: #ffffff20;
 }
 

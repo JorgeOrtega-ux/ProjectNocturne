@@ -39,7 +39,7 @@ function initializeCategorySliderService() {
         return btn;
     }
 
-    // ========== FUNCTION TO UPDATE BUTTONS ==========
+    // ========== FUNCTION TO UPDATE BUTTONS (CORRECTED) ==========
     function updateScrollButtons(container, wrapper, buttons) {
         if (!config.enableButtons) {
             buttons.left?.remove();
@@ -60,9 +60,14 @@ function initializeCategorySliderService() {
         const scrollWidth = container.scrollWidth;
         const clientWidth = container.clientWidth;
 
-        const tolerance = 1;
+        // SOLUCIÓN: Usamos Math.round() para normalizar el valor de scroll y evitar
+        // errores de cálculo con decimales (sub-píxeles), que son la causa
+        // principal de que los botones no se oculten correctamente.
+        const roundedScrollLeft = Math.round(scrollLeft);
 
-        if (scrollLeft > tolerance) {
+        // --- Lógica del botón izquierdo ---
+        // Se muestra si el scroll es mayor que 0
+        if (roundedScrollLeft > 0) {
             if (!buttons.left) {
                 buttons.left = createScrollButton('left', container, wrapper);
                 wrapper.append(buttons.left);
@@ -71,8 +76,11 @@ function initializeCategorySliderService() {
             buttons.left?.remove();
             buttons.left = null;
         }
-
-        if (scrollLeft + clientWidth < scrollWidth - tolerance) {
+        
+        // --- Lógica del botón derecho ---
+        // Se muestra si la suma del scroll actual y el ancho visible es menor
+        // que el ancho total del contenido.
+        if (roundedScrollLeft + clientWidth < scrollWidth) {
             if (!buttons.right) {
                 buttons.right = createScrollButton('right', container, wrapper);
                 wrapper.append(buttons.right);
@@ -173,8 +181,6 @@ function initializeCategorySliderService() {
     window.addEventListener('resize', handleWindowResize);
     window.addEventListener('load', handleWindowLoad);
 }
-
-// ========== CENTRALIZED FONT SIZE MANAGER FOR ALL SECTIONS ==========
 
 function initializeCentralizedFontManager() {
     // ========== GLOBAL VARIABLES ==========

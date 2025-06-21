@@ -21,7 +21,6 @@ function initMobileDragController() {
         return;
     }
     
-    // ✅ AGREGAR VERIFICACIÓN PARA EVITAR INICIALIZACIÓN DUPLICADA
     if (isEnabled) {
         console.log('📱 Mobile drag controller already initialized, skipping...');
         return;
@@ -130,9 +129,6 @@ function handleDragStart(e) {
 
     activeMenu.classList.add('dragging');
     
-    document.body.style.cursor = 'grabbing';
-    dragHandleElement.style.cursor = 'grabbing';
-
     activeMenu.addEventListener('touchmove', preventMenuScroll, { passive: false });
 
     e.preventDefault();
@@ -173,12 +169,7 @@ function handleDragEnd(e) {
 
     isDragging = false;
     activeMenu.classList.remove('dragging');
-    document.body.style.cursor = '';
     
-    if (dragHandleElement) {
-        dragHandleElement.style.cursor = '';
-    }
-
     activeMenu.removeEventListener('touchmove', preventMenuScroll);
 
     if (deltaY > threshold) {
@@ -206,6 +197,8 @@ function preventMenuScroll(e) {
 
 function returnToOriginalPosition() {
     if (!activeMenu) return;
+    
+    const menuElement = activeMenu;
 
     let transitionStyle = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
     
@@ -213,18 +206,18 @@ function returnToOriginalPosition() {
         transitionStyle += ', opacity 0.3s ease';
     }
     
-    activeMenu.style.transition = transitionStyle;
-    activeMenu.style.transform = 'translateY(0)';
+    menuElement.style.transition = transitionStyle;
+    menuElement.style.transform = 'translateY(0)';
     
     if (enableOpacityOnDrag) {
-        activeMenu.style.opacity = '1';
+        menuElement.style.opacity = '1';
     }
 
-    setTimeout(function() {
-        if (activeMenu) {
-            activeMenu.style.transition = '';
-        }
-    }, 300);
+    const handler = function() {
+        menuElement.removeAttribute('style');
+    };
+
+    menuElement.addEventListener('transitionend', handler, { once: true });
 }
 
 // ========== FUNCIONES AUXILIARES ==========

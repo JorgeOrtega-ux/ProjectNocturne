@@ -559,23 +559,20 @@ function getOverlayFromToggle(toggleName) {
 }
 
 function performMobileCloseAnimation(element, callback) {
-    element.classList.add('closing');
-    element.style.transition = 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease';
-    element.style.transform = 'translateY(100%)';
-    element.style.opacity = '0';
+    element.classList.add('closing', 'slide-out-mobile');
 
-    setTimeout(() => {
+    const onAnimationEnd = () => {
         callback();
         resetMobileMenuStyles(element);
-    }, TIMING_CONFIG.MOBILE_ANIMATION_DURATION);
+    };
+
+    element.addEventListener('transitionend', onAnimationEnd, { once: true });
 }
 
 function resetMobileMenuStyles(element) {
     if (element) {
-        element.classList.remove('closing', 'dragging');
-        element.style.transform = '';
-        element.style.opacity = '';
-        element.style.transition = '';
+        element.classList.remove('closing', 'dragging', 'slide-out-mobile');
+        element.removeAttribute('style');
     }
     setTimeout(() => {
         moduleState.isModuleChanging = false;
