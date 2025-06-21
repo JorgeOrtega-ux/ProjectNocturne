@@ -118,7 +118,7 @@ function handleThemeColorCompatibility() {
     }
     else {
         if (!isValidForTheme(colorSystemState.currentColor)) {
-            console.log('耳 Current color', colorSystemState.currentColor, 'is not compatible with new theme, switching to auto');
+            console.log('🎨 Current color', colorSystemState.currentColor, 'is not compatible with new theme, switching to auto');
 
             colorSystemState.currentColor = 'auto';
             applyAutoColor();
@@ -262,7 +262,7 @@ function setupThemeChangeListener() {
 
 function setupLanguageChangeListener() {
     document.addEventListener('languageChanged', (e) => {
-        console.log('倹 Language changed detected in color system:', e.detail);
+        console.log('🌐 Language changed detected in color system:', e.detail);
         setTimeout(() => {
             updateColorSectionHeaders();
             updateColorTooltips();
@@ -327,7 +327,7 @@ function updateSingleColorTooltip(element) {
         if (matches && matches.length >= 2) {
             const hex1 = matches[0];
             const hex2 = matches[1];
-            tooltipText = `${getTranslation('linear_gradient_90deg', 'tooltips') || 'Linear Gradient 90ﾂｰ'}${getTranslation('color_separator', 'tooltips') || ': '}${hex1}, ${hex2}`;
+            tooltipText = `${getTranslation('linear_gradient_90deg', 'tooltips') || 'Linear Gradient 90°'}${getTranslation('color_separator', 'tooltips') || ': '}${hex1}, ${hex2}`;
         } else {
             tooltipText = getTranslation(baseTooltipKey, 'tooltips');
         }
@@ -1220,9 +1220,23 @@ function createSearchColorElement(colorData) {
     colorContent.setAttribute('data-color', colorData.name || colorData.hex);
     colorContent.setAttribute('data-section', 'search');
 
-    // FIX: The tooltip for search results should always be the hex code.
-    // We set data-translate to the hex value, as tooltip-controller prioritizes this attribute.
-    colorContent.setAttribute('data-translate', colorData.hex);
+    const isSearchGeneratedName = (colorData.name && (
+        colorData.name.includes('Lighter') ||
+        colorData.name.includes('Darker') ||
+        colorData.name.includes('More Saturated') ||
+        colorData.name.includes('Less Saturated') ||
+        colorData.name.includes('Warmer') ||
+        colorData.name.includes('Cooler') ||
+        colorData.name.includes('Shade') ||
+        colorData.name.includes('Tint') ||
+        colorData.name.includes('Tone')
+    ));
+
+    if (isSearchGeneratedName) {
+        colorContent.setAttribute('data-translate', colorData.hex);
+    } else {
+        colorContent.setAttribute('data-translate', colorData.name || colorData.hex);
+    }
 
     colorContent.setAttribute('data-translate-category', 'tooltips');
     colorContent.setAttribute('data-translate-target', 'tooltip');
@@ -1251,7 +1265,7 @@ function createSearchColorElement(colorData) {
 // ========== DEBUGGING ==========
 
 function debugColorSystem() {
-    console.group('耳 Color Text Manager Debug (Enhanced with Translations)');
+    console.group('🎨 Color Text Manager Debug (Enhanced with Translations)');
     console.log('Current color:', colorSystemState.currentColor);
     console.log('Current theme:', colorSystemState.currentTheme);
     console.log('Auto color would be:', getAutoColor());
