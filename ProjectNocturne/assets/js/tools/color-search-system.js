@@ -199,10 +199,10 @@ function setupClickOutsideHandler() {
 
         if (paletteMenu.contains(e.target) && !clickedInsideSearchInput && !clickedInsideSearchResults) {
             if (searchState.currentQuery) {
-                clearSearch();
+                clearSearchColors();
             }
         } else if (!paletteMenu.contains(e.target)) {
-            clearSearch();
+            clearSearchColors();
         }
     });
 }
@@ -245,14 +245,14 @@ function handleSearchBlur(e) {
         const clickedInsideSearchResults = relatedTarget && searchResultsWrapper.contains(relatedTarget);
 
         if (!searchInput.value.trim() && !clickedInsideSearchResults) {
-            clearSearch();
+            clearSearchColors();
         }
     }, 150);
 }
 
 function handleSearchKeydown(e) {
     if (e.key === 'Escape') {
-        clearSearch();
+        clearSearchColors();
         e.target.blur();
     } else if (e.key === 'Enter') {
         e.preventDefault();
@@ -260,7 +260,7 @@ function handleSearchKeydown(e) {
         if (query) {
             performSearch(query);
         } else {
-            clearSearch();
+            clearSearchColors();
         }
     }
 }
@@ -777,7 +777,7 @@ function handleSearchColorClick(colorData) {
         window.colorTextManager.setColor(colorData.hex, colorData.name || colorData.hex, 'search');
     }
 
-    clearSearch();
+    clearSearchColors();
 
     const event = new CustomEvent('searchColorSelected', {
         detail: {
@@ -832,7 +832,7 @@ function hideSearchSectionWrapper() {
     }
 }
 
-function clearSearch() {
+function clearSearchColors() {
     const searchInput = document.querySelector(COLOR_SEARCH_CONFIG.searchInput);
     if (searchInput) {
         searchInput.value = '';
@@ -973,7 +973,7 @@ function integrateWithColorSystem() {
 
     document.addEventListener('moduleDeactivated', (e) => {
         if (e.detail && e.detail.module === 'togglePaletteColors') {
-            clearSearch();
+            clearSearchColors();
         }
     });
 
@@ -1013,7 +1013,7 @@ function autoInit() {
     }
 
     window.colorSearchDebug = debugSearchSystem;
-    window.clearColorSearch = clearSearch;
+    window.clearColorSearch = clearSearchColors;
     window.showColorSections = showOtherColorSections;
     window.hideColorSections = hideOtherColorSections;
     window.showSearchSectionWrapper = showSearchSectionWrapper;
@@ -1023,7 +1023,7 @@ function autoInit() {
 window.colorSearchManager = {
     init: initColorSearch,
     refresh: refreshSearchSystem,
-    clear: clearSearch,
+    clear: clearSearchColors,
     addColor: addCustomColor,
     removeColor: removeCustomColor,
     getState: getSearchState,
@@ -1043,7 +1043,7 @@ autoInit();
 export {
     initColorSearch,
     refreshSearchSystem,
-    clearSearch,
+    clearSearchColors,
     addCustomColor,
     removeCustomColor,
     getSearchState,

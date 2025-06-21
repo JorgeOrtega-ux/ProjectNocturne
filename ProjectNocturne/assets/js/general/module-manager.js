@@ -32,6 +32,8 @@ import {
     resetLanguageStates
 } from './language-manager.js';
 
+import { clearSearchColors } from '../tools/color-search-system.js';
+
 // ========================================
 // CONSTANTES Y CONFIGURACIÓN
 // ========================================
@@ -156,6 +158,12 @@ function cancelAllActiveProcesses(reason = 'module-close') {
         
         cleanLanguageChangeStates();
         processesCancelled = true;
+    }
+
+    // ✅ NUEVO: Limpiar la búsqueda de colores
+    if (typeof clearSearchColors === 'function') {
+        console.log(`🚫 Clearing color search (${reason})`);
+        clearSearchColors();
     }
     
     return processesCancelled;
