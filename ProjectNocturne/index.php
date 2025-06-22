@@ -50,6 +50,7 @@
     <script type="module" src="assets/js/tools/general-tools.js"></script>
     <script type="module" src="assets/js/tools/palette-colors.js"></script>
     <script type="module" src="assets/js/tools/color-search-system.js"></script>
+    <script type="module" src="assets/js/tools/alarm-controller.js"></script>
 </body>
 
 </html>

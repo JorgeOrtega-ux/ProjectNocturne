@@ -39,7 +39,7 @@
                     </div>
                 </div>
                 <div class="header-button"
-                   data-module="togglePaletteColors"
+                    data-module="togglePaletteColors"
                     data-translate="color"
                     data-translate-category="tooltips"
                     data-translate-target="tooltip">
@@ -61,6 +61,7 @@
                 </div>
                 <div class="separator"></div>
                 <div class="header-button"
+                    data-action="toggleFullScreen"
                     data-translate="fullscreen"
                     data-translate-category="tooltips"
                     data-translate-target="tooltip">
@@ -70,7 +71,7 @@
         </div>
     </div>
     <div class="section-center">
-         <div class="tool-content">
+        <div class="tool-content">
             <div class="tool-timer">
                 <span>00:00:00</span>
             </div>

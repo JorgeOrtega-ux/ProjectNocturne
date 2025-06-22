@@ -47,7 +47,8 @@ import {
 
 import {
     initializeCategorySliderService,
-    initializeCentralizedFontManager
+    initializeCentralizedFontManager,
+    initializeFullScreenManager
 } from '../tools/general-tools.js';
 
 import {
@@ -382,6 +383,7 @@ function initializeMainComponents() {
     // ========== GENERAL TOOLS INITIALIZATION ==========
     initializeCategorySliderService();
     initializeCentralizedFontManager();
+    initializeFullScreenManager();
     initColorTextSystem();
 
     setupEventListeners();

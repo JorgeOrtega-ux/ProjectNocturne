@@ -324,7 +324,7 @@ body {
 .section-center {
     width: 100%;
     height: auto;
-    padding: 92px 16px;
+    padding: 82px 26px;
     border-bottom: 1px solid #00000020;
 }
 
@@ -738,6 +738,7 @@ body {
 
 .tool-content {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     width: 100%;

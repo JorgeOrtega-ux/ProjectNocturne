@@ -830,9 +830,84 @@ function dispatchTextStyleChangeEvent() {
     document.dispatchEvent(event);
 }
 
+// ========== FULLSCREEN MANAGER ==========
+
+function initializeFullScreenManager() {
+    // Check for Fullscreen API support
+    if (!document.documentElement.requestFullscreen) {
+        console.warn('Fullscreen API is not supported in this browser.');
+        // Hide all fullscreen buttons if the API is not supported
+        document.querySelectorAll('[data-action="toggleFullScreen"]').forEach(button => {
+            button.style.display = 'none';
+        });
+        return;
+    }
+
+    // Main event listener for clicks
+    document.addEventListener('click', function(event) {
+        const fullScreenButton = event.target.closest('[data-action="toggleFullScreen"]');
+        if (!fullScreenButton) return;
+
+        event.preventDefault();
+
+        const section = fullScreenButton.closest('.section-alarm, .section-timer, .section-stopwatch, .section-worldClock');
+        if (!section) {
+            console.error('Fullscreen button is not inside a recognized section.');
+            return;
+        }
+
+        const sectionCenter = section.querySelector('.section-center');
+        if (!sectionCenter) {
+            console.error('.section-center not found within the section.');
+            return;
+        }
+
+        toggleFullScreen(sectionCenter);
+    });
+
+    // Function to toggle fullscreen state
+    function toggleFullScreen(element) {
+        if (!document.fullscreenElement) {
+            element.requestFullscreen().catch(err => {
+                console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+            });
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
+
+    // Listen for changes in fullscreen state to update icons and log status
+    document.addEventListener('fullscreenchange', () => {
+        const fullscreenElement = document.fullscreenElement;
+        const isInFullScreen = !!fullscreenElement;
+        console.log('Fullscreen mode toggled:', isInFullScreen);
+
+        const allButtons = document.querySelectorAll('[data-action="toggleFullScreen"]');
+
+        allButtons.forEach(button => {
+            const icon = button.querySelector('.material-symbols-rounded');
+            if (!icon) return;
+
+            // Check if the button's own section is the one in fullscreen
+            const section = button.closest('.section-alarm, .section-timer, .section-stopwatch, .section-worldClock');
+            const sectionCenter = section ? section.querySelector('.section-center') : null;
+
+            if (fullscreenElement && sectionCenter === fullscreenElement) {
+                icon.textContent = 'fullscreen_exit';
+            } else {
+                icon.textContent = 'fullscreen';
+            }
+        });
+    });
+}
+
+
 // ========== EXPORTS ==========
 export {
     initializeCategorySliderService,
     initializeCentralizedFontManager,
-    initializeTextStyleManager
+    initializeTextStyleManager,
+    initializeFullScreenManager
 };

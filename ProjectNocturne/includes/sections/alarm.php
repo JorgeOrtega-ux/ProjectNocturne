@@ -49,6 +49,7 @@
                 </div>
                 <div class="separator"></div>
                 <div class="header-button"
+                    data-action="toggleFullScreen"
                     data-translate="fullscreen"
                     data-translate-category="tooltips"
                     data-translate-target="tooltip">
