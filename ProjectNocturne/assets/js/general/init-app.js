@@ -93,7 +93,8 @@ const REFRESH_SOURCES = {
     TRANSLATIONS_APPLIED_EVENT: 'translationsAppliedEvent',
     COLOR_SYSTEM_REFRESH: 'colorSystemRefresh',
     SEARCH_UPDATE: 'searchUpdate',
-    SEARCH_CLEARED: 'searchCleared'
+    SEARCH_CLEARED: 'searchCleared',
+    RECENT_COLORS_RENDERED: 'recentColorsRendered'
 };
 
 const DOM_SELECTORS = {
@@ -183,8 +184,16 @@ function createRefreshConfig(options = {}) {
 function forceRefresh(options = {}) {
     const config = createRefreshConfig(options);
     const now = Date.now();
+    
+    // FIX: List of sources that should bypass throttling for immediate UI feedback.
+    const criticalUiSources = [
+        REFRESH_SOURCES.SEARCH_UPDATE,
+        REFRESH_SOURCES.RECENT_COLORS_RENDERED,
+        REFRESH_SOURCES.DYNAMIC_ELEMENTS
+    ];
 
-    if (now - applicationState.lastRefreshTime < TIMING_CONFIG.MIN_INTERVAL_BETWEEN_REFRESHES) {
+    // FIX: Modify throttling guard to allow critical sources through.
+    if (now - applicationState.lastRefreshTime < TIMING_CONFIG.MIN_INTERVAL_BETWEEN_REFRESHES && !criticalUiSources.includes(config.source)) {
         if (debugConfig.enableLogs) {
             console.log(`⏸️ Refresh skipped - Too frequent (${config.source})`);
         }
@@ -216,8 +225,9 @@ function forceRefresh(options = {}) {
     }
 
     const executeRefresh = () => performRefreshOperation(config);
-
-    if (config.immediate) {
+    
+    // FIX: Keep immediate execution logic for critical sources.
+    if (config.immediate || criticalUiSources.includes(config.source)) {
         executeRefresh();
     } else {
         const delay = getRefreshDelay(config.source);
@@ -287,7 +297,8 @@ function getRefreshDelay(source) {
         [REFRESH_SOURCES.SECTION_CHANGED]: TIMING_CONFIG.SECTION_CHANGE_DELAY,
         [REFRESH_SOURCES.COLOR_SYSTEM_REFRESH]: TIMING_CONFIG.DEBOUNCE_DELAY,
         [REFRESH_SOURCES.SEARCH_UPDATE]: TIMING_CONFIG.DEBOUNCE_DELAY,
-        [REFRESH_SOURCES.SEARCH_CLEARED]: TIMING_CONFIG.DEBOUNCE_DELAY
+        [REFRESH_SOURCES.SEARCH_CLEARED]: TIMING_CONFIG.DEBOUNCE_DELAY,
+        [REFRESH_SOURCES.RECENT_COLORS_RENDERED]: TIMING_CONFIG.DEBOUNCE_DELAY
     };
 
     return delayMap[source] || TIMING_CONFIG.DEBOUNCE_DELAY;

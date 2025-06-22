@@ -1,4 +1,4 @@
-// ========== OPTIMIZED TOOLTIP SYSTEM - UNIFIED ==========
+// ========== OPTIMIZED TOOLTIP SYSTEM - UNIFIED WITH DYNAMIC ELEMENTS FIX ==========
 
 // ========== SYSTEM CONFIGURATION ==========
 const TOOLTIP_ENABLED = true;
@@ -385,7 +385,36 @@ function initializeMobileSidebarTooltips() {
     });
 }
 
-// ========== OPTIMIZED EVENT LISTENERS ==========
+// ========== HELPER AND EVENT ATTACHMENT FUNCTIONS (REFACTORED) ==========
+function _attachListenersToSingleElement(element) {
+    if (attachedElements.has(element)) return;
+    attachedElements.add(element);
+
+    if (element.title && !element.dataset.originalTitle) {
+        element.dataset.originalTitle = element.title;
+        element.title = '';
+    }
+
+    if (element._tooltipHandlers) {
+        element.removeEventListener('mouseenter', element._tooltipHandlers.mouseenter);
+        element.removeEventListener('mouseleave', element._tooltipHandlers.mouseleave);
+        element.removeEventListener('click', element._tooltipHandlers.click);
+    }
+
+    const mouseEnterHandler = () => showTooltip(element);
+    const mouseLeaveHandler = () => hideTooltip();
+    const clickHandler = () => hideTooltip();
+
+    element.addEventListener('mouseenter', mouseEnterHandler);
+    element.addEventListener('mouseleave', mouseLeaveHandler);
+    element.addEventListener('click', clickHandler);
+
+    element._tooltipHandlers = {
+        mouseenter: mouseEnterHandler,
+        mouseleave: mouseLeaveHandler,
+        click: clickHandler
+    };
+}
 
 function attachEventListeners() {
     const targetSelectors = [
@@ -396,44 +425,15 @@ function attachEventListeners() {
         '[data-translate][data-translate-target="tooltip"]',
         '[data-tooltip]',
     ];
+    const selectorString = targetSelectors.join(',');
 
-    for (const selector of targetSelectors) {
-        const elements = document.querySelectorAll(selector);
-
-        for (const element of elements) {
-            if (element.classList.contains('menu-link') && !element.classList.contains('color-content')) {
-                continue;
-            }
-
-            if (attachedElements.has(element)) continue;
-            attachedElements.add(element);
-
-            if (element.title && !element.dataset.originalTitle) {
-                element.dataset.originalTitle = element.title;
-                element.title = '';
-            }
-
-            if (element._tooltipHandlers) {
-                element.removeEventListener('mouseenter', element._tooltipHandlers.mouseenter);
-                element.removeEventListener('mouseleave', element._tooltipHandlers.mouseleave);
-                element.removeEventListener('click', element._tooltipHandlers.click);
-            }
-
-            const mouseEnterHandler = () => showTooltip(element);
-            const mouseLeaveHandler = () => hideTooltip();
-            const clickHandler = () => hideTooltip();
-
-            element.addEventListener('mouseenter', mouseEnterHandler);
-            element.addEventListener('mouseleave', mouseLeaveHandler);
-            element.addEventListener('click', clickHandler);
-
-            element._tooltipHandlers = {
-                mouseenter: mouseEnterHandler,
-                mouseleave: mouseLeaveHandler,
-                click: clickHandler
-            };
+    const elements = document.querySelectorAll(selectorString);
+    elements.forEach(element => {
+        if (element.classList.contains('menu-link') && !element.classList.contains('color-content')) {
+            return;
         }
-    }
+        _attachListenersToSingleElement(element);
+    });
 
     initializeMobileSidebarTooltips();
 }
@@ -458,7 +458,7 @@ function handleWindowResize() {
     tooltipResizeHandler = resizeHandler;
 }
 
-// ========== PUBLIC CONFIGURATION FUNCTIONS ==========
+// ========== PUBLIC FUNCTIONS ==========
 function enableTooltips() {
     enabled = true;
     if (popperLoaded && !isSystemInitialized) {
@@ -582,7 +582,7 @@ function batchMigrateTooltips() {
     }
 }
 
-// ========== TOOLTIP MAPS MANAGEMENT (Primarily for translation system integration) ==========
+// ========== TOOLTIP MAPS MANAGEMENT ==========
 function addTooltipText(key, text) {
     tooltipTextMap[key] = text;
 }
@@ -618,11 +618,31 @@ function setTranslationGetter(translationFn) {
     getTranslationFunction = translationFn;
 }
 
-// ========== COMPLETE RESET FUNCTION ==========
+// ========== NEW TARGETED FUNCTION FOR DYNAMIC CONTENT ==========
+function attachTooltipsToNewElements(container) {
+    if (!enabled || !isSystemInitialized || !container) return;
 
+    const targetSelectors = [
+        '.header-button[data-translate-target="tooltip"]',
+        '.sidebar-button[data-translate-target="tooltip"]',
+        '.color-content[data-translate-target="tooltip"]',
+        '.menu-link[data-translate-target="tooltip"]',
+        '[data-translate][data-translate-target="tooltip"]',
+        '[data-tooltip]',
+    ];
+    const selectorString = targetSelectors.join(',');
+
+    const elements = container.querySelectorAll(selectorString);
+    elements.forEach(_attachListenersToSingleElement);
+
+    if (container.matches(selectorString)) {
+        _attachListenersToSingleElement(container);
+    }
+}
+
+// ========== COMPLETE RESET AND CLEANUP ==========
 function resetTooltipSystem() {
     cleanupAllTooltips();
-
     isSystemInitialized = false;
     mobileSidebarInitialized = false;
     isRefreshingTooltips = false;
@@ -631,7 +651,6 @@ function resetTooltipSystem() {
         clearTimeout(refreshTooltipsTimeout);
         refreshTooltipsTimeout = null;
     }
-
     if (tooltipResizeHandler) {
         window.removeEventListener('resize', tooltipResizeHandler);
         tooltipResizeHandler = null;
@@ -639,21 +658,17 @@ function resetTooltipSystem() {
     initializeTooltipSystem();
 }
 
-// ========== OPTIMIZED PAGE UNLOAD CLEANUP ==========
 window.addEventListener('beforeunload', () => {
     cleanupAllTooltips();
     if (refreshTooltipsTimeout) {
         clearTimeout(refreshTooltipsTimeout);
-        refreshTooltipsTimeout = null;
     }
     if (tooltipResizeHandler) {
         window.removeEventListener('resize', tooltipResizeHandler);
-        tooltipResizeHandler = null;
     }
 });
 
 // ========== DEBUG FUNCTIONS ==========
-
 function debugTooltipSystem() {
     console.group('🐛 Tooltip System Debug');
     console.log('System initialized:', isSystemInitialized);
@@ -702,5 +717,6 @@ export {
     resetTooltipSystem,
     debugTooltipSystem,
     getTooltipSystemStatus,
-    setTranslationGetter
+    setTranslationGetter,
+    attachTooltipsToNewElements
 };

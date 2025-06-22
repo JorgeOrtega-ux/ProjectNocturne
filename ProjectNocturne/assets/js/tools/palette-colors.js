@@ -1,7 +1,9 @@
 // ========== COLOR MANAGEMENT SYSTEM WITH IMPROVED TRANSLATIONS ==========
 
-// ========== CONFIGURATION AND CONSTANTS ==========
+// ========== IMPORTS ==========
+import { attachTooltipsToNewElements } from '../general/tooltip-controller.js';
 
+// ========== CONFIGURATION AND CONSTANTS ==========
 const COLOR_SYSTEM_CONFIG = {
     currentColor: 'auto',
     currentTheme: 'system',
@@ -422,9 +424,7 @@ function loadStoredData() {
             initializeDefaultRecentColors();
         }
 
-        // ========== NEW: Logic to handle premium features being disabled ==========
         if (!PALETTE_PREMIUM_FEATURES) {
-            // Check if the currently active color is a gradient. If so, reset to auto.
             if (isGradientColor(colorSystemState.currentColor)) {
                 console.log('🎨 Premium features disabled. Active gradient color found. Resetting to auto.');
                 colorSystemState.currentColor = 'auto';
@@ -433,12 +433,10 @@ function loadStoredData() {
                 localStorage.setItem(COLOR_SYSTEM_CONFIG.activeColorSectionKey, 'auto');
             }
 
-            // Filter out any gradient colors from the recent colors list.
             const nonGradientRecents = colorSystemState.recentColors.filter(
                 color => !isGradientColor(color.hex)
             );
 
-            // If the list changed, update the state and save it back to storage.
             if (nonGradientRecents.length < colorSystemState.recentColors.length) {
                 console.log('🎨 Premium features disabled. Removing gradient colors from recent list.');
                 colorSystemState.recentColors = nonGradientRecents;
@@ -488,7 +486,6 @@ function saveRecentColors() {
                 console.error('❌ Failed to save recent colors to localStorage');
             }
         } else {
-             // It's valid to save an empty array if all recent colors were gradients and premium is off.
             localStorage.setItem(COLOR_SYSTEM_CONFIG.recentColorsKey, '[]');
         }
     } catch (error) {
@@ -506,7 +503,6 @@ function addToRecentColors(colorHex, colorNameForRecent, source = 'manual', forc
         actualName = getTranslatedColorNameFromHex(actualHex);
     }
     else if (isGradientColor(colorHex)) {
-        // If premium is off, don't add gradients to recent.
         if (!PALETTE_PREMIUM_FEATURES) return;
         const gradient = COLOR_SYSTEM_CONFIG.gradientColors.find(g => g.hex === colorHex);
         actualName = gradient ? gradient.name : colorNameForRecent;
@@ -589,8 +585,8 @@ function renderRecentColors(source = 'manual') {
         setupRecentColorEvents();
         setInitialActiveState();
 
-        if (typeof window.forceRefresh === 'function') {
-            window.forceRefresh({ source: 'recentColorsRendered', preset: 'TOOLTIPS_ONLY' });
+        if (typeof attachTooltipsToNewElements === 'function') {
+            attachTooltipsToNewElements(recentContainer);
         }
     }, 10);
 }
@@ -1361,7 +1357,6 @@ function debugColorSystem() {
 
     console.group('Collapsible Sections Debug');
     console.log('Collapsible sections enabled:', PALETTE_PREMIUM_FEATURES);
-    console.log('Currently collapsed sections:', Array.from(colorSystemState.collapsedSections));
     document.querySelectorAll('.menu-content[data-collapsible-section="true"]').forEach(section => {
         const sectionId = section.getAttribute('data-section');
         const content = section.querySelector('.menu-content-general');

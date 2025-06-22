@@ -1,5 +1,8 @@
 // ========== ENHANCED COLOR SEARCH SYSTEM - ONLY SEARCHED COLOR VARIATIONS ==========
 
+// ========== IMPORTS ==========
+import { attachTooltipsToNewElements } from '../general/tooltip-controller.js';
+
 // ========== CONFIGURATION AND CONSTANTS ==========
 
 const COLOR_SEARCH_CONFIG = {
@@ -359,9 +362,6 @@ function performSearch(query) {
         hideSearchSectionWrapper();
     } finally {
         searchState.isSearching = false;
-        if (typeof window.forceRefresh === 'function') {
-            window.forceRefresh({ source: 'searchUpdate', preset: 'TOOLTIPS_ONLY' });
-        }
     }
 }
 
@@ -753,22 +753,27 @@ function displaySearchResults(results) {
         { key: 'shades', titleKey: 'shades', icon: 'dark_mode' },
         { key: 'tones', titleKey: 'tones', icon: 'contrast' }
     ];
-
+    
+    const fragment = document.createDocumentFragment();
     sections.forEach(sectionInfo => {
         const data = results[sectionInfo.key];
         const colorsToDisplay = sectionInfo.single ? (data ? [data] : []) : (data || []);
 
         if (colorsToDisplay.length > 0) {
-            const fragment = document.createDocumentFragment();
             const sectionElement = createSearchResultSection(
                 sectionInfo.titleKey,
                 sectionInfo.icon,
                 colorsToDisplay
             );
             fragment.appendChild(sectionElement);
-            searchResultsWrapper.appendChild(fragment);
         }
     });
+    
+    searchResultsWrapper.appendChild(fragment);
+
+    if (typeof attachTooltipsToNewElements === 'function') {
+        attachTooltipsToNewElements(searchResultsWrapper);
+    }
 
     if (searchResultsWrapper.children.length === 0) {
         displaySearchError(getTranslation('no_valid_results', 'search') + ' "' + searchState.currentQuery + '"');
