@@ -333,6 +333,9 @@ function updateSingleColorTooltip(element) {
     const colorName = element.getAttribute('data-color');
     const colorSection = element.getAttribute('data-section');
     const baseTooltipKey = element.getAttribute('data-translate');
+    
+    // Determine the correct category. 'auto' is a UI concept, not just a color.
+    const tooltipCategory = (baseTooltipKey === 'auto') ? 'tooltips' : 'colors';
 
     let tooltipText = '';
 
@@ -344,7 +347,7 @@ function updateSingleColorTooltip(element) {
             const hex2 = matches[1];
             tooltipText = `${getTranslation('linear_gradient_90deg', 'tooltips') || 'Linear Gradient 90°'}${getTranslation('color_separator', 'tooltips') || ': '}${hex1}, ${hex2}`;
         } else {
-            tooltipText = getTranslation(baseTooltipKey, 'tooltips');
+            tooltipText = getTranslation(baseTooltipKey, tooltipCategory);
         }
     } else if (colorHex === 'auto') {
         tooltipText = getTranslation('auto', 'tooltips');
@@ -352,7 +355,7 @@ function updateSingleColorTooltip(element) {
         const knownColorKey = getTranslatedColorNameFromHex(colorHex);
         
         if (knownColorKey) {
-            tooltipText = getTranslation(knownColorKey, 'tooltips');
+            tooltipText = getTranslation(knownColorKey, 'colors');
         } else {
             const isSearchGeneratedName = (colorName && (
                 colorName.includes('Lighter') ||
@@ -369,7 +372,7 @@ function updateSingleColorTooltip(element) {
             if (colorSection === 'search' || (colorSection === 'recent' && isSearchGeneratedName)) {
                 tooltipText = colorHex;
             } else {
-                const translatedName = getTranslation(baseTooltipKey, 'tooltips');
+                const translatedName = getTranslation(baseTooltipKey, 'colors');
                 const isPredefinedColorName = (translatedName !== baseTooltipKey);
 
                 if (isPredefinedColorName) {
@@ -632,7 +635,7 @@ function createRecentColorElement(recentColor) {
         colorContent.setAttribute('data-translate', recentColor.hex);
     }
     
-    colorContent.setAttribute('data-translate-category', 'tooltips');
+    colorContent.setAttribute('data-translate-category', 'colors');
     colorContent.setAttribute('data-translate-target', 'tooltip');
 
     updateSingleColorTooltip(colorContent);
@@ -675,18 +678,10 @@ function setupRecentColorEvents() {
             e.stopPropagation();
             handleColorClick(element, { hex: colorHex, name: colorName, section: colorSection });
         };
-
-        const mouseEnterHandler = () => {
-            if (!element.classList.contains('active')) {
-                element.style.transform = 'scale(1.05)';
-            }
-        };
-
-        const mouseLeaveHandler = () => {
-            if (!element.classList.contains('active')) {
-                element.style.transform = 'scale(1)';
-            }
-        };
+        
+        // Let CSS handle hover effects
+        const mouseEnterHandler = () => {};
+        const mouseLeaveHandler = () => {};
 
         element.addEventListener('click', clickHandler);
         element.addEventListener('mouseenter', mouseEnterHandler);
@@ -719,8 +714,10 @@ function setupColorElements() {
                 element: element
             });
 
+            const tooltipCategory = (colorName === 'auto') ? 'tooltips' : 'colors';
+
             element.setAttribute('data-translate', colorName);
-            element.setAttribute('data-translate-category', 'tooltips');
+            element.setAttribute('data-translate-category', tooltipCategory);
             element.setAttribute('data-translate-target', 'tooltip');
 
             updateSingleColorTooltip(element);
@@ -813,7 +810,7 @@ function createGradientColorElement(gradient) {
     colorContent.setAttribute('data-section', 'gradient');
 
     colorContent.setAttribute('data-translate', gradient.name);
-    colorContent.setAttribute('data-translate-category', 'tooltips');
+    colorContent.setAttribute('data-translate-category', 'colors');
     colorContent.setAttribute('data-translate-target', 'tooltip');
 
     updateSingleColorTooltip(colorContent);
@@ -852,18 +849,10 @@ function attachEventListeners() {
             e.stopPropagation();
             handleColorClick(element, { hex: colorHex, name: colorName, section: colorSection });
         };
-
-        const mouseEnterHandler = () => {
-            if (!element.classList.contains('active')) {
-                element.style.transform = 'scale(1.05)';
-            }
-        };
-
-        const mouseLeaveHandler = () => {
-            if (!element.classList.contains('active')) {
-                element.style.transform = 'scale(1)';
-            }
-        };
+        
+        // Let CSS handle hover effects
+        const mouseEnterHandler = () => {};
+        const mouseLeaveHandler = () => {};
 
         element.addEventListener('click', clickHandler);
         element.addEventListener('mouseenter', mouseEnterHandler);
@@ -977,14 +966,16 @@ function handleColorClick(element, colorData) {
 function setActiveColorInAllSections(clickedElement) {
     document.querySelectorAll('.color-content').forEach(el => {
         el.classList.remove('active');
-        el.style.transform = 'scale(1)';
+        // Remove the inline transform style to let CSS classes handle it
+        el.style.transform = '';
     });
 
     if (clickedElement) {
         clickedElement.classList.add('active');
-        clickedElement.style.transform = 'scale(1.1)';
+        // Let the .active class in the CSS file apply the transform
     }
 }
+
 
 // ========== COLLAPSIBLE SECTIONS FUNCTIONALITY ==========
 
@@ -1340,7 +1331,7 @@ function createSearchColorElement(colorData) {
         }
     }
 
-    colorContent.setAttribute('data-translate-category', 'tooltips');
+    colorContent.setAttribute('data-translate-category', 'colors');
     colorContent.setAttribute('data-translate-target', 'tooltip');
 
     updateSingleColorTooltip(colorContent);
