@@ -34,7 +34,7 @@ const COLOR_SYSTEM_CONFIG = {
     moveRecentToFront: true,
 };
 
-const PALETTE_PREMIUM_FEATURES = true;
+const PALETTE_PREMIUM_FEATURES = false;
 
 
 // ========== CENTRALIZED STATE ==========
@@ -421,6 +421,31 @@ function loadStoredData() {
         } else {
             initializeDefaultRecentColors();
         }
+
+        // ========== NEW: Logic to handle premium features being disabled ==========
+        if (!PALETTE_PREMIUM_FEATURES) {
+            // Check if the currently active color is a gradient. If so, reset to auto.
+            if (isGradientColor(colorSystemState.currentColor)) {
+                console.log('🎨 Premium features disabled. Active gradient color found. Resetting to auto.');
+                colorSystemState.currentColor = 'auto';
+                localStorage.setItem(COLOR_SYSTEM_CONFIG.storageKey, 'auto');
+                localStorage.setItem(COLOR_SYSTEM_CONFIG.activeColorKey, 'auto');
+                localStorage.setItem(COLOR_SYSTEM_CONFIG.activeColorSectionKey, 'auto');
+            }
+
+            // Filter out any gradient colors from the recent colors list.
+            const nonGradientRecents = colorSystemState.recentColors.filter(
+                color => !isGradientColor(color.hex)
+            );
+
+            // If the list changed, update the state and save it back to storage.
+            if (nonGradientRecents.length < colorSystemState.recentColors.length) {
+                console.log('🎨 Premium features disabled. Removing gradient colors from recent list.');
+                colorSystemState.recentColors = nonGradientRecents;
+                saveRecentColors();
+            }
+        }
+
     } catch (error) {
         console.error('Error loading stored data for color system:', error);
         colorSystemState.currentColor = 'auto';
@@ -454,7 +479,7 @@ function saveColor(color, colorHex, colorNameForRecent, section) {
 
 function saveRecentColors() {
     try {
-        if (Array.isArray(colorSystemState.recentColors) && colorSystemState.recentColors.length > 0) {
+        if (Array.isArray(colorSystemState.recentColors)) {
             const jsonString = JSON.stringify(colorSystemState.recentColors);
             localStorage.setItem(COLOR_SYSTEM_CONFIG.recentColorsKey, jsonString);
             
@@ -463,7 +488,8 @@ function saveRecentColors() {
                 console.error('❌ Failed to save recent colors to localStorage');
             }
         } else {
-            console.warn('⚠️ Attempted to save empty recent colors array');
+             // It's valid to save an empty array if all recent colors were gradients and premium is off.
+            localStorage.setItem(COLOR_SYSTEM_CONFIG.recentColorsKey, '[]');
         }
     } catch (error) {
         console.error('❌ Error saving recent colors to localStorage:', error);
@@ -480,6 +506,8 @@ function addToRecentColors(colorHex, colorNameForRecent, source = 'manual', forc
         actualName = getTranslatedColorNameFromHex(actualHex);
     }
     else if (isGradientColor(colorHex)) {
+        // If premium is off, don't add gradients to recent.
+        if (!PALETTE_PREMIUM_FEATURES) return;
         const gradient = COLOR_SYSTEM_CONFIG.gradientColors.find(g => g.hex === colorHex);
         actualName = gradient ? gradient.name : colorNameForRecent;
     } else {
@@ -777,6 +805,7 @@ function createGradientColorElement(gradient) {
 }
 
 function isGradientColor(hex) {
+    if (typeof hex !== 'string') return false;
     return hex.startsWith('linear-gradient') || hex.startsWith('radial-gradient');
 }
 

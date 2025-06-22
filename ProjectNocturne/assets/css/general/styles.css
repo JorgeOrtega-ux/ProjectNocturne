@@ -635,7 +635,7 @@ body {
 
 /* Gradient color previews */
 .color.gradient-preview {
-    background-color: transparent !important;
+    background-color: transparent;
     background-size: 150% 100%;
     background-position: center;
     border: 1px solid #00000020;
@@ -854,7 +854,7 @@ body {
     box-sizing: border-box;
     width: auto;
     min-width: 100px;
-    max-width: 190px;
+    max-width: 300px;
     padding: 4px 12px;
     font-size: 0.875rem;
     font-weight: 500;

@@ -281,9 +281,9 @@
 }
 
 .dark-mode .color-content.active .auto-color::before {
-    border-color: #ffffff !important;
-    opacity: 1 !important;
-    transform: scale(1) !important;
+    border-color: #ffffff;
+    opacity: 1;
+    transform: scale(1);
 }
 
 .dark-mode .overflow-y {
