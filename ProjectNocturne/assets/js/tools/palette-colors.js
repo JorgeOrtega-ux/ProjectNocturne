@@ -1502,7 +1502,7 @@ function refreshColorSystem() {
         applyColorToElements();
     }
     setInitialActiveState();
-    renderRecentColors('refresh');
+    // renderRecentColors('refresh'); // This line was causing re-animation on open. It's removed.
     renderGradientColors();
     setupCollapsibleSections();
 

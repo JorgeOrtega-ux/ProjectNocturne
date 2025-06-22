@@ -11,7 +11,7 @@ const COLOR_SEARCH_CONFIG = {
     searchColorsWrapper: '[data-colors-wrapper="search"]',
     maxResultsPerSection: 18,
     debounceDelay: 300,
-    SEARCH_STRICT_LANGUAGE: true // true = solo busca en el idioma actual, false = busca en todos los idiomas como fallback.
+    SEARCH_STRICT_LANGUAGE: true
 };
 
 // ========== NEW MULTILINGUAL COLOR DATABASE ==========
