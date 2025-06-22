@@ -142,7 +142,7 @@
     color: #ffffff;
 }
 
-.dark-mode .search-content-text > input {
+.dark-mode .search-content-text>input {
     color: #ffffff;
 }
 
@@ -284,4 +284,11 @@
     border-color: #ffffff !important;
     opacity: 1 !important;
     transform: scale(1) !important;
+}
+
+.dark-mode .overflow-y {
+    scrollbar-color: #ffffff80 transparent;
+}
+.dark-mode .overflow-x {
+    scrollbar-color: #ffffff80 transparent;
 }
