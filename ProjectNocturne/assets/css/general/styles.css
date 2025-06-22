@@ -36,21 +36,15 @@ body {
 }
 
 /* GRADIENT TEXT STYLES */
-/* These will be applied dynamically by JavaScript when a gradient is selected */
-/* Note: color: transparent is a fallback for browsers that don't support -webkit-text-fill-color */
 .tool-alarm span,
 .tool-timer span,
 .tool-stopwatch span,
 .tool-worldClock span {
-    /* Initial state for solid colors */
-    color: #000000;
-    /* Default properties for gradients - will be overwritten/activated by JS */
+    color: unset;
     background-image: none;
     -webkit-background-clip: unset;
     background-clip: unset;
     -webkit-text-fill-color: unset;
-    color: unset;
-    /* Ensure it resets if no gradient */
 }
 
 /* ====================================== */
@@ -77,8 +71,6 @@ body {
 /* ====================================== */
 /* ============= SIDEBAR ================ */
 /* ====================================== */
-
-/* Sidebar Wrapper */
 .sidebar-wrapper {
     position: relative;
     display: flex;
@@ -97,9 +89,9 @@ body {
     height: 100%;
     padding: 8px;
     gap: 8px;
+    background-color: #ffffff;
     border: 1px solid #00000020;
     border-radius: 12px;
-    background-color: #ffffff;
 }
 
 /* Mobile Sidebar */
@@ -120,13 +112,7 @@ body {
     padding: 8px;
     gap: 8px;
     background-color: #ffffff;
-    border-top: 0;
     border-right: 1px solid #00000020;
-    border-bottom: 0;
-    border-left: 0;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
     border-bottom-left-radius: 12px;
 }
 
@@ -154,10 +140,10 @@ body {
     align-items: center;
     width: 40px;
     height: 40px;
+    background-color: transparent;
     border: 1px solid #00000020;
     border-radius: 8px;
     outline: none;
-    background-color: transparent;
     cursor: pointer;
     user-select: none;
 }
@@ -167,17 +153,17 @@ body {
 }
 
 .sidebar-button.active {
-    border-color: #000000;
-    background-color: #000000;
     color: #ffffff;
+    background-color: #000000;
+    border-color: #000000;
 }
 
 /* Sidebar Separator */
 .sidebar .separator {
     width: 35px;
     height: 1px;
-    border-radius: 50px;
     background-color: #00000020;
+    border-radius: 50px;
 }
 
 /* ====================================== */
@@ -188,19 +174,19 @@ body {
     display: flex;
     flex: 1 1 auto;
     flex-direction: column;
+    background-color: #ffffff;
     border: 1px solid #00000020;
     border-radius: 12px;
-    background-color: #ffffff;
 }
 
 /* ====================================== */
 /* ========== CONTENT TOP =============== */
 /* ====================================== */
 .general-content-top {
+    z-index: 999;
     width: 100%;
     height: auto;
     border-bottom: 1px solid #00000020;
-    z-index: 999;
 }
 
 /* ====================================== */
@@ -227,9 +213,9 @@ body {
 
 .header-right {
     position: relative;
+    z-index: 1;
     display: flex;
     flex: 0 0 auto;
-    z-index: 1;
 }
 
 /* Header Items */
@@ -244,15 +230,15 @@ body {
 /* Header Buttons */
 .header-button {
     display: flex;
+    flex: 0 0 auto;
     justify-content: center;
     align-items: center;
     width: 40px;
     height: 40px;
-    flex: 0 0 auto;
+    background-color: transparent;
     border: 1px solid #00000020;
     border-radius: 8px;
     outline: none;
-    background-color: transparent;
     cursor: pointer;
     user-select: none;
 }
@@ -282,9 +268,9 @@ body {
 .general-content-bottom {
     position: relative;
     display: flex;
-    height: 100%;
     flex-direction: column;
     flex: 0 0 auto;
+    height: 100%;
 }
 
 .scrollable-content {
@@ -306,32 +292,33 @@ body {
 .section-timer,
 .section-stopwatch,
 .section-worldClock {
-    flex: 1 1 auto;
-    flex-direction: column;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
 }
 
 .section-top {
     position: relative;
     display: flex;
+    flex: 0 0 auto;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    flex: 0 0 auto;
+    padding: 8px;
     gap: 8px;
+    border-bottom: 1px solid #00000020;
     overflow-y: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding: 8px;
-    border-bottom: 1px solid #00000020;
 }
 
 .section-top .separator {
     flex: 0 0 auto;
     width: 1px;
     height: 35px;
-    border-radius: 50px;
     background-color: #00000020;
+    border-radius: 50px;
 }
 
 .section-center {
@@ -364,11 +351,11 @@ body {
     width: 100%;
     height: auto;
     padding: 8px;
+    color: #000000;
+    background-color: #ffffff;
     border: 1px solid transparent;
     border-radius: 12px;
-    background-color: #ffffff;
     filter: drop-shadow(0 4px 12px #00000020);
-    color: #000000;
 }
 
 /* Module Overlays (Palette, Alarm, Timer, World Clock) */
@@ -384,22 +371,23 @@ body {
 .menu-timer,
 .menu-worldClock,
 .menu-paletteColors {
+    display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
+    background-color: #ffffff;
     border: 1px solid transparent;
     border-radius: 12px;
-    background-color: #ffffff;
     filter: drop-shadow(0 4px 12px #00000020);
 }
 
 /* Menu section specific styles (applies to control center & overlays) */
 .menu-section {
+    display: flex;
+    flex-direction: column;
     width: 100%;
     height: 100%;
     overflow: auto;
-    display: flex;
-    flex-direction: column;
 }
 
 .menu-section-top {
@@ -409,16 +397,15 @@ body {
 
 .shadow {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-    /* Sombra más suave y difusa */
 }
 
 .menu-section-center {
-    flex: 1 1 auto;
     display: flex;
-    padding: 8px;
-    overflow: hidden;
-    gap: 8px;
+    flex: 1 1 auto;
     flex-direction: column;
+    padding: 8px;
+    gap: 8px;
+    overflow: hidden;
 }
 
 .menu-section-bottom {
@@ -444,12 +431,12 @@ body {
 .menu-link {
     display: flex;
     flex-direction: row;
+    flex: 0 0 auto;
     width: 100%;
     height: 40px;
-    flex: 0 0 auto;
+    color: #000000;
     border-radius: 8px;
     cursor: pointer;
-    color: #000000;
 }
 
 .menu-link:hover {
@@ -473,16 +460,16 @@ body {
     display: block;
     flex: 1 1 auto;
     align-self: center;
-    overflow: hidden;
     text-align: start;
+    overflow: hidden;
 }
 
 .menu-link-text span {
     display: block;
+    width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 100%;
 }
 
 /* ====================================== */
@@ -490,34 +477,32 @@ body {
 /* ====================================== */
 .menu-content-wrapper.active {
     display: flex;
-    /* Show when active */
 }
 
 .menu-content-wrapper.disabled {
     display: none;
-    /* Hide when disabled */
 }
 
 .menu-content {
-    width: 100%;
-    height: auto;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    height: auto;
 }
 
 .menu-content-header {
-    width: 100%;
-    height: 45px;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+    width: 100%;
+    height: 45px;
     padding: 12px;
-    border-radius: 8px;
     gap: 8px;
+    font-weight: 500;
     background-color: #ffffff;
     border: 1px solid #00000020;
-    font-weight: 500;
+    border-radius: 8px;
 }
 
 .menu-content-general {
@@ -533,21 +518,21 @@ body {
 }
 
 .color-content {
-    aspect-ratio: 1;
     position: relative;
     width: 100%;
+    aspect-ratio: 1;
     border: 1px solid #00000020;
     border-radius: 50%;
     cursor: pointer;
 }
 
 .color {
+    position: relative;
     width: 100%;
     height: 100%;
+    border: 1px solid transparent;
     border-radius: 50%;
     transition: all 0.2s ease;
-    border: 1px solid transparent;
-    position: relative;
 }
 
 .color::before {
@@ -559,10 +544,10 @@ body {
     bottom: -5px;
     border: 2px solid transparent;
     border-radius: 50%;
-    pointer-events: none;
     opacity: 0;
     transform: scale(0.8);
     transition: all 0.2s ease;
+    pointer-events: none;
 }
 
 /* Interactive Color States */
@@ -581,148 +566,65 @@ body {
 }
 
 .color-content.active .color::before {
-    border-color: #000000; /* Borde negro para modo claro */
+    border-color: #000000;
     opacity: 1;
     transform: scale(1);
 }
 
-/* Color Definitions (specific shades) */
-.black-color {
-    background: #000000;
-}
-
-.darkgray-color {
-    background: #525252;
-}
-
-.mediumgray-color {
-    background: #757575;
-}
-
-.lightgray-color {
-    background: #a8a8a8;
-}
-
-.verylightgray-color {
-    background: #dbdbdb;
-}
-
-.white-color {
-    border: 1px solid #00000020;
-    background: #ffffff;
-}
-
-.brightred-color {
-    background: #ff2f2f;
-}
-
-.coralred-color {
-    background: #ff5555;
-}
-
-.pink-color {
-    background: #ff64c2;
-}
-
-.lavenderpink-color {
-    background: #ca6ae4;
-}
-
-.purple-color {
-    background: #8a50ff;
-}
-
-.violet-color {
-    background: #5c15e9;
-}
-
-.darkturquoise-color {
-    background: #0095b0;
-}
-
-.aquablue-color {
-    background: #0abedd;
-}
-
-.turquoiseblue-color {
-    background: #5adfe4;
-}
-
-.skyblue-color {
-    background: #36b4ff;
-}
-
-.royalblue-color {
-    background: #506fff;
-}
-
-.cobaltblue-color {
-    background: #0048ab;
-}
-
-.green-color {
-    background: #00bd61;
-}
-
-.grassgreen-color {
-    background: #7cd755;
-}
-
-.limegreen-color {
-    background: #bfff70;
-}
-
-.yellow-color {
-    background: #ffdc57;
-}
-
-.peach-color {
-    background: #ffb366;
-}
-
-.orange-color {
-    background: #ff8f4b;
-}
+/* Color Definitions */
+.black-color { background: #000000; }
+.darkgray-color { background: #525252; }
+.mediumgray-color { background: #757575; }
+.lightgray-color { background: #a8a8a8; }
+.verylightgray-color { background: #dbdbdb; }
+.white-color { background: #ffffff; border: 1px solid #00000020; }
+.brightred-color { background: #ff2f2f; }
+.coralred-color { background: #ff5555; }
+.pink-color { background: #ff64c2; }
+.lavenderpink-color { background: #ca6ae4; }
+.purple-color { background: #8a50ff; }
+.violet-color { background: #5c15e9; }
+.darkturquoise-color { background: #0095b0; }
+.aquablue-color { background: #0abedd; }
+.turquoiseblue-color { background: #5adfe4; }
+.skyblue-color { background: #36b4ff; }
+.royalblue-color { background: #506fff; }
+.cobaltblue-color { background: #0048ab; }
+.green-color { background: #00bd61; }
+.grassgreen-color { background: #7cd755; }
+.limegreen-color { background: #bfff70; }
+.yellow-color { background: #ffdc57; }
+.peach-color { background: #ffb366; }
+.orange-color { background: #ff8f4b; }
 
 /* ====================================== */
 /* ========= AUTO COLOR STYLES ========== */
 /* ====================================== */
-
-/* Auto Color Styles - COMPLETAMENTE CORREGIDO */
 .auto-color {
-    background-color: #000000; /* Fondo negro (muestra color del texto en tema claro) */
- 
     position: relative;
+    background-color: #000000;
 }
 
-/* Auto color indicator text styling */
 .auto-color span {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
     z-index: 2;
+    transform: translate(-50%, -50%);
     font-family: 'Roboto', sans-serif;
     font-weight: 700;
     font-size: 12px;
-    color: #ffffff; /* Texto blanco sobre fondo negro */
+    color: #ffffff;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
-/* ========== CORRECCIÓN DEL PSEUDO-ELEMENTO ::before PARA AUTO-COLOR ========== */
-
-
-
-/* ========== AUTO COLOR HOVER/ACTIVE - CORREGIDO ========== */
-
 /* Color validation warning styles */
 .color-content.invalid-for-theme {
-    opacity: 0.5;
     position: relative;
+    opacity: 0.5;
 }
 
-/* Auto color nunca debería ser inválido */
 .color-content.invalid-for-theme .auto-color {
     opacity: 1;
 }
@@ -731,16 +633,12 @@ body {
     display: none;
 }
 
-/* NEW: Styles for gradient color previews */
+/* Gradient color previews */
 .color.gradient-preview {
     background-color: transparent !important;
-    /* Ensure no solid background */
-    border: 1px solid #00000020;
-    /* Default border for light theme */
     background-size: 150% 100%;
-    /* Extend background to smooth corners */
     background-position: center;
-    /* Center the extended background */
+    border: 1px solid #00000020;
 }
 
 .menu-content-scrolleable {
@@ -777,17 +675,16 @@ body {
     align-items: center;
 }
 
-.search-content-text>input {
+.search-content-text > input {
     width: 100%;
     height: 90%;
+    color: #000000;
+    background-color: transparent;
     border: none;
     outline: none;
-    background-color: transparent;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: #000000;
-    /* Default text color for input */
 }
 
 /* ====================================== */
@@ -795,13 +692,13 @@ body {
 /* ====================================== */
 .tool-options-wrapper {
     position: relative;
-    width: 100%;
-    overflow-x: auto;
-    gap: 8px;
-    overflow-y: hidden;
+    display: flex;
     justify-content: space-between;
     align-items: center;
-    display: flex;
+    width: 100%;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -831,8 +728,8 @@ body {
 }
 
 .tool-options-content::-webkit-scrollbar-thumb {
-    border-radius: 4px;
     background: #00000080;
+    border-radius: 4px;
 }
 
 .tool-options-content::-webkit-scrollbar-thumb:hover {
@@ -840,11 +737,11 @@ body {
 }
 
 .tool-content {
-    width: 100%;
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 .increse-font-zise {
@@ -854,9 +751,9 @@ body {
     width: 100%;
     max-width: max-content;
     height: 40px;
-    overflow: hidden;
     border: 1px solid #00000020;
     border-radius: 8px;
+    overflow: hidden;
 }
 
 .increse-font-zise-left,
@@ -896,11 +793,11 @@ body {
     align-items: center;
     width: 35px;
     height: 35px;
+    transform: translateY(-50%);
+    background: #ffffff;
     border: 1px solid #00000020;
     border-radius: 50%;
-    background: #ffffff;
     cursor: pointer;
-    transform: translateY(-50%);
 }
 
 .scroll-btn:hover {
@@ -919,11 +816,11 @@ body {
 .tool-timer,
 .tool-stopwatch,
 .tool-worldClock {
-    flex: 1 1 auto;
-    height: 100%;
     display: flex;
+    flex: 1 1 auto;
     justify-content: center;
     align-items: center;
+    height: 100%;
     overflow: hidden;
 }
 
@@ -942,8 +839,8 @@ body {
     display: flex;
     width: 52px;
     height: 4px;
-    border-radius: 50px;
     background-color: #f5f5fa;
+    border-radius: 50px;
     cursor: pointer;
 }
 
@@ -959,35 +856,34 @@ body {
     min-width: 100px;
     max-width: 190px;
     padding: 4px 12px;
-    border: 1px solid #252627;
-    border-radius: 8px;
-    background-color: #252627;
-    color: #ffffff;
     font-size: 0.875rem;
     font-weight: 500;
     line-height: 1.3;
     letter-spacing: 0.0178571429em;
     text-align: center;
+    color: #ffffff;
+    background-color: #252627;
+    border: 1px solid #252627;
+    border-radius: 8px;
 }
 
 /* Tooltip Arrows */
 .tooltip::before {
     content: "";
     position: absolute;
-    border: 1px solid #252627;
     background-color: #252627;
+    border: 1px solid #252627;
 }
 
-/* Arrow positioning by placement */
 .tooltip[data-popper-placement^="bottom"]::before {
     top: -6px;
     left: 50%;
     width: 10px;
     height: 10px;
+    transform: translateX(-50%) rotate(45deg);
     border-bottom: none;
     border-right: none;
     border-radius: 2px 0 0 0;
-    transform: translateX(-50%) rotate(45deg);
 }
 
 .tooltip[data-popper-placement^="top"]::before {
@@ -995,10 +891,10 @@ body {
     left: 50%;
     width: 10px;
     height: 10px;
+    transform: translateX(-50%) rotate(45deg);
     border-top: none;
     border-left: none;
     border-radius: 0 0 2px 0;
-    transform: translateX(-50%) rotate(45deg);
 }
 
 .tooltip[data-popper-placement^="right"]::before {
@@ -1006,10 +902,10 @@ body {
     left: -6px;
     width: 10px;
     height: 10px;
+    transform: translateY(-50%) rotate(45deg);
     border-right: none;
     border-top: none;
     border-radius: 0 0 0 2px;
-    transform: translateY(-50%) rotate(45deg);
 }
 
 .tooltip[data-popper-placement^="left"]::before {
@@ -1017,35 +913,33 @@ body {
     right: -6px;
     width: 10px;
     height: 10px;
+    transform: translateY(-50%) rotate(45deg);
     border-left: none;
     border-bottom: none;
     border-radius: 0 2px 0 0;
-    transform: translateY(-50%) rotate(45deg);
 }
 
 /* ====================================== */
 /* ============ ANIMATIONS ============== */
 /* ====================================== */
 .menu-link-icon .material-symbols-rounded.spinning {
-    animation: spin 1s linear infinite;
     color: #000000;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
     from {
         transform: rotate(0deg);
     }
-
     to {
         transform: rotate(360deg);
     }
 }
 
-/* Nueva animación de cierre para móviles */
 .slide-out-mobile {
-    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
     transform: translateY(100%);
     opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease;
 }
 
 /* ====================================== */
@@ -1060,8 +954,8 @@ body {
 }
 
 .preview-active {
-    opacity: 0.5;
     background-color: #f5f5fa;
+    opacity: 0.5;
 }
 
 .disabled-interactive {
@@ -1095,26 +989,21 @@ body {
 /* ====================================== */
 /* ========== MEDIA QUERIES ============ */
 /* ====================================== */
-
-/* Desktop */
 @media (min-width: 768px) {
     .sidebar-wrapper.mobile-sidebar .sidebar {
         display: none;
     }
 }
 
-/* Tablet and smaller */
 @media (max-width: 768px) {
     .sidebar-wrapper.desktop-sidebar {
         display: none;
     }
-
     .header-button[data-module="toggleSidebarMovile"] {
         display: flex;
     }
 }
 
-/* Mobile */
 @media (max-width: 468px) {
     .module-control-center {
         position: fixed;
@@ -1126,18 +1015,15 @@ body {
         height: 100%;
         background-color: #00000080;
     }
-
     .menu-control-center {
+        padding-top: 0;
+        border-bottom: 0;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
-        border-bottom: 0;
-        padding-top: 0;
     }
-
     .pill-container {
         display: flex;
     }
-
     .module-overlay {
         position: fixed;
         top: 0;
@@ -1149,27 +1035,25 @@ body {
         padding: 0;
         background-color: #00000080;
     }
-
     .menu-paletteColors,
     .menu-alarm,
     .menu-timer,
     .menu-worldClock {
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-        border-bottom: 0;
-        padding-top: 0;
         height: auto;
         max-height: 85%;
+        padding-top: 0;
+        border-bottom: 0;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
     }
 }
 
 /* ====================================== */
 /* ========= COLLAPSIBLE SECTIONS ======= */
 /* ====================================== */
-
 .menu-content-header-primary {
-    flex: 1 1 auto;
     display: flex;
+    flex: 1 1 auto;
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
@@ -1177,25 +1061,25 @@ body {
 }
 
 .menu-content-header-secondary {
-    width: auto;
-    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    width: auto;
+    height: 100%;
 }
 
 .collapse-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 32px;
     height: 32px;
-    border-radius: 50%;
+    padding: 0;
     color: #000000;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
@@ -1207,27 +1091,24 @@ body {
     transition: transform 0.3s ease;
 }
 
-/* Collapsed state - NO TRANSITION */
 .menu-content-general.collapsed {
     max-height: 0;
-    overflow: hidden;
     padding-top: 0;
     padding-bottom: 0;
     opacity: 0;
+    overflow: hidden;
 }
 
-/* Expanded state - NO TRANSITION */
 .menu-content-general.expanded {
     max-height: none;
     opacity: 1;
 }
 
-/* Previous styles */
 .menu-content-general {
     width: auto;
     height: auto;
-    padding-bottom: 0;
     padding-top: 8px;
+    padding-bottom: 0;
 }
 
 .menu-content-wrapper {
@@ -1238,7 +1119,6 @@ body {
 /* ====================================== */
 /* ========= TEXT STYLES ================ */
 /* ====================================== */
-
 .bold-mode {
     font-weight: bold;
 }

@@ -22,23 +22,19 @@
 /* ====================================== */
 /* ============= SIDEBAR ================ */
 /* ====================================== */
-
-/* Desktop Sidebar */
 .dark-mode .sidebar-wrapper.desktop-sidebar .sidebar {
     background-color: #252627;
     border-color: #ffffff20;
 }
 
-/* Mobile Sidebar */
 .dark-mode .sidebar-wrapper.mobile-sidebar .sidebar {
-    border-color: #ffffff20;
     background-color: #252627;
+    border-color: #ffffff20;
 }
 
-/* Sidebar Buttons */
 .dark-mode .sidebar-button {
-    border-color: #ffffff20;
     color: #fff;
+    border-color: #ffffff20;
 }
 
 .dark-mode .sidebar-button:not(.active):hover {
@@ -50,7 +46,6 @@
     border-color: #ffffff20;
 }
 
-/* Sidebar Separator */
 .dark-mode .sidebar .separator {
     background-color: #ffffff20;
 }
@@ -63,9 +58,6 @@
     border-color: #ffffff20;
 }
 
-/* ====================================== */
-/* ========== CONTENT TOP =============== */
-/* ====================================== */
 .dark-mode .general-content-top {
     border-color: #ffffff20;
 }
@@ -73,11 +65,10 @@
 /* ====================================== */
 /* =============== HEADER =============== */
 /* ====================================== */
-
-/* Header Buttons */
 .dark-mode .header-button {
-    border-color: #ffffff20;
     color: #ffffff;
+    background-color: transparent;
+    border-color: #ffffff20;
 }
 
 .dark-mode .header-button:not(.active):hover {
@@ -91,67 +82,33 @@
 /* ====================================== */
 /* ========= MODULES & OVERLAYS ========= */
 /* ====================================== */
-.dark-mode .menu-control-center {
-    background-color: #252627;
-    border-color: #ffffff20;
-    color: #ffffff;
-    filter: unset;
-}
-
-.dark-mode .menu-paletteColors {
-    background-color: #252627;
-    border-color: #ffffff20;
-    color: #ffffff;
-    filter: unset;
-}
-
-.dark-mode .menu-alarm {
-    background-color: #252627;
-    border-color: #ffffff20;
-    color: #ffffff;
-    filter: unset;
-}
-
-.dark-mode .menu-timer {
-    background-color: #252627;
-    border-color: #ffffff20;
-    color: #ffffff;
-    filter: unset;
-}
-
+.dark-mode .menu-control-center,
+.dark-mode .menu-paletteColors,
+.dark-mode .menu-alarm,
+.dark-mode .menu-timer,
 .dark-mode .menu-worldClock {
+    color: #ffffff;
     background-color: #252627;
     border-color: #ffffff20;
-    color: #ffffff;
     filter: unset;
 }
 
-.dark-mode .menu-section-top {
-    border-color: #ffffff20;
-}
+.dark-mode .menu-section-top,
 .dark-mode .menu-section-bottom {
     border-color: #ffffff20;
 }
 
-/* Menu Content (Palette) */
 .dark-mode .menu-content-header {
-    border-color: #ffffff20;
     background-color: #ffffff20;
+    border-color: #ffffff20;
 }
-
-.dark-mode .color-content .active {
-    border-color: #ffffff20; /* Active border for colors in dark mode */
-}
-
-
 
 .dark-mode .black-color {
-    border: 1px solid #ffffff80; /* Specific border for black in dark mode */
+    border: 1px solid #ffffff80;
 }
 
-/* NEW: Dark mode styles for gradient color previews */
 .dark-mode .color.gradient-preview {
-    border: 1px solid #ffffff20; /* Keep a subtle border in dark mode */
+    border: 1px solid #ffffff20;
 }
 
 /* ====================================== */
@@ -185,7 +142,7 @@
     color: #ffffff;
 }
 
-.dark-mode .search-content-text>input {
+.dark-mode .search-content-text > input {
     color: #ffffff;
 }
 
@@ -223,46 +180,13 @@
 }
 
 .dark-mode .scroll-btn {
-    border-color: #ffffff20;
-    background-color: #252627;
     color: #ffffff;
+    background-color: #252627;
+    border-color: #ffffff20;
 }
 
 .dark-mode .scroll-btn:hover {
     background-color: #18191b;
-}
-
-/* Legacy tool-name, tool-increse, sound-selector-content (if still used) */
-.dark-mode .tool-name {
-    border-color: #ffffff20;
-}
-
-.dark-mode .tool-increse {
-    color: #fff;
-    border-color: #ffffff20;
-}
-
-.dark-mode .tool-increse-left {
-    color: #fff;
-}
-
-.dark-mode .tool-increse-center {
-    color: #fff;
-}
-
-.dark-mode .tool-increse-right {
-    color: #fff;
-}
-
-.dark-mode .tool-increse-left:hover {
-    background-color: #ffffff20;
-}
-.dark-mode .tool-increse-right:hover {
-    background-color: #ffffff20;
-}
-
-.dark-mode .sound-selector-content {
-    border-color: #ffffff20;
 }
 
 /* ====================================== */
@@ -290,17 +214,6 @@
     background-color: #ffffff20;
 }
 
-/* ====================================== */
-/* ============= UTILITIES ============== */
-/* ====================================== */
-.dark-mode .overflow-y {
-    scrollbar-color: #ffffff80 transparent;
-}
-
-.dark-mode .overflow-x {
-    scrollbar-color: #ffffff80 transparent;
-}
-
 .dark-mode .color-content.active .color::before {
     border-color: #fff;
 }
@@ -324,40 +237,36 @@
 /* ====================================== */
 /* ======= AUTO COLOR DARK MODE ======== */
 /* ====================================== */
-
-/* Auto Color en modo oscuro - CORREGIDO */
 .dark-mode .auto-color {
-    background-color: #ffffff; /* Fondo blanco (muestra color del texto en tema oscuro) */
-    border: 1px solid #ffffff20; /* Borde más claro para tema oscuro */
+    background-color: #ffffff;
+    border: 1px solid #ffffff20;
 }
 
-/* Auto color text en modo oscuro */
 .dark-mode .auto-color span {
-    color: #000000; /* Texto negro sobre fondo blanco */
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Sombra negra sutil */
+    color: #000000;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* Pseudo-elemento ::before para auto-color en modo oscuro */
 .dark-mode .auto-color::before {
     content: '';
     position: absolute;
+    z-index: 1;
     top: -5px;
     left: -5px;
     right: -5px;
     bottom: -5px;
     border: 2px solid transparent;
     border-radius: 50%;
-    pointer-events: none;
     opacity: 0;
     transform: scale(0.8);
     transition: all 0.2s ease;
-    z-index: 1;
+    pointer-events: none;
 }
 
-/* Estados interactivos en modo oscuro - CORREGIDOS */
+/* ========== AUTO COLOR HOVER/ACTIVE - CORREGIDO ========== */
 .dark-mode .color-content:hover .auto-color {
     transform: scale(0.9);
-    border-color: #ffffff40; /* Borde claro para fondo blanco */
+    border-color: #ffffff40;
 }
 
 .dark-mode .color-content:not(.active):hover .auto-color::before {
@@ -368,12 +277,11 @@
 
 .dark-mode .color-content.active .auto-color {
     transform: scale(0.9);
-    border-color: #ffffff; /* Borde blanco para fondo blanco */
-    border-width: 2px;
+    border: 2px solid #ffffff;
 }
 
 .dark-mode .color-content.active .auto-color::before {
-    border-color: #ffffff !important; /* Anillo exterior blanco */
+    border-color: #ffffff !important;
     opacity: 1 !important;
     transform: scale(1) !important;
 }
