@@ -419,32 +419,39 @@ function getBaseColorFromQuery(query) {
     return null;
 }
 
+// ===============================================================
+// CORRECCIÓN: La función ahora siempre devuelve la clave canónica en inglés.
+// ===============================================================
 function getColorName(colorHex, originalQuery) {
-    const lowerQuery = originalQuery.toLowerCase().trim();
-    const lang = (typeof window.getCurrentLanguage === 'function') ? window.getCurrentLanguage() : 'en-us';
-    const currentDb = COLOR_DATABASES[lang] || COLOR_DATABASES['en-us'];
+    const lowerHex = colorHex.toLowerCase();
 
-    if (currentDb[lowerQuery]) {
-        return lowerQuery;
-    }
-
-    for (const [name, hex] of Object.entries(currentDb)) {
-        if (hex.toLowerCase() === colorHex.toLowerCase()) {
-            return name;
+    // Primero, intenta encontrar la clave canónica (inglés) directamente.
+    const englishDb = COLOR_DATABASES['en-us'];
+    for (const [name, hex] of Object.entries(englishDb)) {
+        if (hex.toLowerCase() === lowerHex) {
+            return name; // Devuelve la clave canónica en inglés.
         }
     }
 
+    // Si no se encuentra en inglés (poco probable para colores estándar),
+    // busca en todos los idiomas pero aun así devuelve la clave en inglés.
     for (const dbLang in COLOR_DATABASES) {
         if (Object.prototype.hasOwnProperty.call(COLOR_DATABASES, dbLang)) {
-           const db = COLOR_DATABASES[dbLang];
+            const db = COLOR_DATABASES[dbLang];
             for (const [name, hex] of Object.entries(db)) {
-               if (hex.toLowerCase() === colorHex.toLowerCase()) {
-                   return name;
-               }
-           }
-       }
-   }
+                if (hex.toLowerCase() === lowerHex) {
+                    // Se encontró una coincidencia. Ahora encuentra la clave en inglés para este hex.
+                    for (const [enName, enHex] of Object.entries(englishDb)) {
+                        if (enHex.toLowerCase() === lowerHex) {
+                            return enName;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
+    // Si no se encuentra ningún nombre, devuelve el código hexadecimal como último recurso.
     return colorHex;
 }
 
