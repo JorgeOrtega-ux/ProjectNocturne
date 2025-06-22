@@ -8,6 +8,7 @@ const COLOR_SEARCH_CONFIG = {
     searchColorsWrapper: '[data-colors-wrapper="search"]',
     maxResultsPerSection: 18,
     debounceDelay: 300
+    // ✅ LA BANDERA LOCAL SE HA ELIMINADO
 };
 
 // ========== NEW MULTILINGUAL COLOR DATABASE ==========
@@ -96,7 +97,6 @@ function isValidForTheme(hex) {
         return window.colorTextManager.isValidForTheme(hex);
     }
 
-    // Fallback if palette-colors.js is not loaded or function is not available
     if (hex === 'auto') return true;
     if (hex.startsWith('linear-gradient') || hex.startsWith('radial-gradient')) return true;
 
@@ -118,7 +118,6 @@ function getAutoColor() {
     if (typeof window.colorTextManager === 'object' && typeof window.colorTextManager.getAutoColor === 'function') {
         return window.colorTextManager.getAutoColor();
     }
-    // Fallback
     const currentTheme = getCurrentTheme();
     return currentTheme === 'dark' ? '#ffffff' : '#000000';
 }
@@ -349,9 +348,18 @@ function processSearchQuery(query) {
         results.desaturatedVariations = generateDesaturatedVariations(chromaColor).filter(c => isValidForTheme(c.hex));
         results.warmVariations = generateWarmVariations(chromaColor).filter(c => isValidForTheme(c.hex));
         results.coolVariations = generateCoolVariations(chromaColor).filter(c => isValidForTheme(c.hex));
-        results.shades = generateShades(chromaColor).filter(c => isValidForTheme(c.hex));
-        results.tints = generateTints(chromaColor).filter(c => isValidForTheme(c.hex));
-        results.tones = generateTones(chromaColor).filter(c => isValidForTheme(c.hex));
+        
+        // ✅ LÓGICA CONDICIONAL MODIFICADA
+        // Consulta la configuración centralizada en palette-colors.js
+        const arePremiumFeaturesEnabled = window.colorTextManager && typeof window.colorTextManager.arePremiumFeaturesEnabled === 'function' 
+                                      ? window.colorTextManager.arePremiumFeaturesEnabled() 
+                                      : false;
+
+        if (arePremiumFeaturesEnabled) {
+            results.shades = generateShades(chromaColor).filter(c => isValidForTheme(c.hex));
+            results.tints = generateTints(chromaColor).filter(c => isValidForTheme(c.hex));
+            results.tones = generateTones(chromaColor).filter(c => isValidForTheme(c.hex));
+        }
 
     } catch (error) {
         console.error('Error processing color with chroma.js:', error);
@@ -419,28 +427,21 @@ function getBaseColorFromQuery(query) {
     return null;
 }
 
-// ===============================================================
-// CORRECCIÓN: La función ahora siempre devuelve la clave canónica en inglés.
-// ===============================================================
 function getColorName(colorHex, originalQuery) {
     const lowerHex = colorHex.toLowerCase();
 
-    // Primero, intenta encontrar la clave canónica (inglés) directamente.
     const englishDb = COLOR_DATABASES['en-us'];
     for (const [name, hex] of Object.entries(englishDb)) {
         if (hex.toLowerCase() === lowerHex) {
-            return name; // Devuelve la clave canónica en inglés.
+            return name;
         }
     }
 
-    // Si no se encuentra en inglés (poco probable para colores estándar),
-    // busca en todos los idiomas pero aun así devuelve la clave en inglés.
     for (const dbLang in COLOR_DATABASES) {
         if (Object.prototype.hasOwnProperty.call(COLOR_DATABASES, dbLang)) {
             const db = COLOR_DATABASES[dbLang];
             for (const [name, hex] of Object.entries(db)) {
                 if (hex.toLowerCase() === lowerHex) {
-                    // Se encontró una coincidencia. Ahora encuentra la clave en inglés para este hex.
                     for (const [enName, enHex] of Object.entries(englishDb)) {
                         if (enHex.toLowerCase() === lowerHex) {
                             return enName;
@@ -451,7 +452,6 @@ function getColorName(colorHex, originalQuery) {
         }
     }
 
-    // Si no se encuentra ningún nombre, devuelve el código hexadecimal como último recurso.
     return colorHex;
 }
 

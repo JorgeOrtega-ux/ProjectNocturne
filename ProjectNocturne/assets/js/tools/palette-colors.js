@@ -21,22 +21,23 @@ const COLOR_SYSTEM_CONFIG = {
         { name: 'deep_amethyst', hex: 'linear-gradient(90deg, #3F2B96 0%, #A8C0FF 100%)' },
         { name: 'sky_ocean', hex: 'linear-gradient(90deg, #000851 0%, #1CB5E0 100%)' },
         { name: 'electric_dream', hex: 'linear-gradient(90deg, #3a47d5 0%, #00d2ff 100%)' },
-
         { name: 'emerald_forest', hex: 'linear-gradient(90deg, #008552 0%, #9ebd13 100%)' },
         { name: 'spring_mint', hex: 'linear-gradient(90deg, #92FE9D 0%, #00C9FF 100%)' },
         { name: 'citrus_burst', hex: 'linear-gradient(90deg, #3ad59f 0%, #f8ff00 100%)' },
         { name: 'golden_desert', hex: 'linear-gradient(90deg, #c67700 0%, #fcff9e 100%)' },
-
         { name: 'desert_rose', hex: 'linear-gradient(90deg, #d53369 0%, #daae51 100%)' },
         { name: 'vibrant_fusion', hex: 'linear-gradient(90deg, #FC466B 0%, #3F5EFB 100%)' },
         { name: 'magic_purple', hex: 'linear-gradient(90deg, #515ada 0%, #efd5ff 100%)' },
         { name: 'soft_lavender', hex: 'linear-gradient(90deg, #d9e7ff 0%, #e3ffe7 100%)' }
     ],
-    enableCollapsibleSections: true,
+    // ✅ SE HAN ELIMINADO LAS LET ANTERIORES Y SE USA LA NUEVA CONSTANTE GLOBAL
     collapsedSectionsKey: 'collapsed-color-sections',
-    enableGradientColorsSection: true,
     moveRecentToFront: true,
 };
+
+// ✅ NUEVA CONSTANTE ÚNICA PARA CONTROLAR TODAS LAS FUNCIONES PREMIUM
+const PALETTE_PREMIUM_FEATURES = true;
+
 
 // ========== CENTRALIZED STATE ==========
 
@@ -168,7 +169,6 @@ function applyAutoColor() {
     const autoColorHex = getAutoColor();
     applyColorToElements(autoColorHex);
 
-    // ✅ ARREGLO: Al agregar a recientes, usar la clave de color correcto en lugar de 'auto'
     if (colorSystemState.isInitialized) {
         const colorKey = getTranslatedColorNameFromHex(autoColorHex);
         addToRecentColors(autoColorHex, colorKey || autoColorHex, 'auto', true);
@@ -234,7 +234,9 @@ function initColorTextSystem() {
         createColorElementForSearch: createSearchColorElement,
         isValidForTheme: isValidForTheme,
         getCurrentTheme: () => colorSystemState.currentTheme,
-        toggleSectionCollapse: toggleSectionCollapse
+        toggleSectionCollapse: toggleSectionCollapse,
+        // ✅ SE AÑADE LA NUEVA FUNCIÓN PARA EXPONER EL ESTADO PREMIUM
+        arePremiumFeaturesEnabled: () => PALETTE_PREMIUM_FEATURES 
     };
 }
 
@@ -246,7 +248,6 @@ function setupThemeChangeListener() {
             setTimeout(() => {
                 updateColorTooltips();
                 renderGradientColors();
-                // ✅ IMPORTANTE: Renderizar recientes después del cambio de tema
                 renderRecentColors('theme_change');
                 applyCollapsedSectionsState();
                 setupCollapsibleSections();
@@ -314,7 +315,7 @@ function updateColorSectionHeaders() {
         defaultColorsHeader.textContent = getDefaultColorsHeader();
     }
 
-    if (COLOR_SYSTEM_CONFIG.enableGradientColorsSection) {
+    if (PALETTE_PREMIUM_FEATURES) {
         const gradientColorsHeader = document.querySelector('[data-section="gradient-colors"] .menu-content-header span:last-child');
         if (gradientColorsHeader) {
             gradientColorsHeader.textContent = getGradientColorsHeader();
@@ -349,14 +350,11 @@ function updateSingleColorTooltip(element) {
     } else if (colorHex === 'auto') {
         tooltipText = getTranslation('auto', 'tooltips');
     } else {
-        // ✅ ARREGLO PRINCIPAL: Verificar si el color tiene nombre traducido
         const knownColorKey = getTranslatedColorNameFromHex(colorHex);
         
         if (knownColorKey) {
-            // Es un color conocido, usar su traducción
             tooltipText = getTranslation(knownColorKey, 'tooltips');
         } else {
-            // No es un color conocido, verificar si es de búsqueda
             const isSearchGeneratedName = (colorName && (
                 colorName.includes('Lighter') ||
                 colorName.includes('Darker') ||
@@ -372,7 +370,6 @@ function updateSingleColorTooltip(element) {
             if (colorSection === 'search' || (colorSection === 'recent' && isSearchGeneratedName)) {
                 tooltipText = colorHex;
             } else {
-                // Intentar traducir con la clave base, si no funciona usar hex
                 const translatedName = getTranslation(baseTooltipKey, 'tooltips');
                 const isPredefinedColorName = (translatedName !== baseTooltipKey);
 
@@ -384,7 +381,6 @@ function updateSingleColorTooltip(element) {
             }
         }
 
-        // Agregar texto de no disponible si aplica
         if (element.classList.contains('color-content') && !isValidForTheme(colorHex)) {
             const unavailableText = getUnavailableText();
             if (unavailableText && unavailableText !== 'color_unavailable') {
@@ -414,13 +410,11 @@ function loadStoredData() {
 
         const storedRecents = localStorage.getItem(COLOR_SYSTEM_CONFIG.recentColorsKey);
         if (storedRecents) {
-            // ✅ ARREGLO: Validar que el JSON no esté corrupto
             try {
                 const parsedRecents = JSON.parse(storedRecents);
                 if (Array.isArray(parsedRecents) && parsedRecents.length > 0) {
                     colorSystemState.recentColors = parsedRecents;
                 } else {
-                    // Si está vacío o corrupto, inicializar con color auto
                     initializeDefaultRecentColors();
                 }
             } catch (parseError) {
@@ -428,7 +422,6 @@ function loadStoredData() {
                 initializeDefaultRecentColors();
             }
         } else {
-            // No hay colores recientes guardados, inicializar
             initializeDefaultRecentColors();
         }
     } catch (error) {
@@ -444,7 +437,7 @@ function initializeDefaultRecentColors() {
 
     colorSystemState.recentColors = [{
         hex: autoColorHex,
-        name: colorKey || autoColorHex, // ✅ USAR CLAVE DE COLOR CORRECTO
+        name: colorKey || autoColorHex,
         timestamp: Date.now()
     }];
     saveRecentColors();
@@ -464,12 +457,10 @@ function saveColor(color, colorHex, colorNameForRecent, section) {
 
 function saveRecentColors() {
     try {
-        // ✅ ARREGLO: Validar que el array no esté vacío antes de guardar
         if (Array.isArray(colorSystemState.recentColors) && colorSystemState.recentColors.length > 0) {
             const jsonString = JSON.stringify(colorSystemState.recentColors);
             localStorage.setItem(COLOR_SYSTEM_CONFIG.recentColorsKey, jsonString);
             
-            // ✅ DEBUG: Verificar que se guardó correctamente
             const verification = localStorage.getItem(COLOR_SYSTEM_CONFIG.recentColorsKey);
             if (!verification) {
                 console.error('❌ Failed to save recent colors to localStorage');
@@ -489,19 +480,16 @@ function addToRecentColors(colorHex, colorNameForRecent, source = 'manual', forc
 
     if (colorHex === 'auto') {
         actualHex = getAutoColor();
-        // ✅ ARREGLO: Siempre usar el nombre traducido del color real para auto
-        actualName = getTranslatedColorNameFromHex(actualHex); // Nueva función
+        actualName = getTranslatedColorNameFromHex(actualHex);
     }
     else if (isGradientColor(colorHex)) {
         const gradient = COLOR_SYSTEM_CONFIG.gradientColors.find(g => g.hex === colorHex);
         actualName = gradient ? gradient.name : colorNameForRecent;
     } else {
-        // ✅ ARREGLO: Para colores sólidos, verificar si es un color conocido
         const knownColorName = getTranslatedColorNameFromHex(colorHex);
         if (knownColorName) {
             actualName = knownColorName;
         } else {
-            // Si no es un color conocido, usar el hex como nombre
             actualName = colorHex;
         }
     }
@@ -518,14 +506,14 @@ function addToRecentColors(colorHex, colorNameForRecent, source = 'manual', forc
 
         colorSystemState.recentColors.unshift({
             hex: actualHex,
-            name: actualName, // ✅ AHORA USA EL NOMBRE CORREGIDO
+            name: actualName,
             timestamp: Date.now()
         });
         needsReRender = true;
     } else if (!shouldMoveToFront && existingIndex === -1) {
         colorSystemState.recentColors.unshift({
             hex: actualHex,
-            name: actualName, // ✅ AHORA USA EL NOMBRE CORREGIDO
+            name: actualName,
             timestamp: Date.now()
         });
         needsReRender = true;
@@ -589,13 +577,10 @@ function createRecentColorElement(recentColor) {
     colorContent.setAttribute('data-color', recentColor.name);
     colorContent.setAttribute('data-section', 'recent');
 
-    // ✅ ARREGLO: Usar siempre la clave de traducción correcta
     const knownColorKey = getTranslatedColorNameFromHex(recentColor.hex);
     if (knownColorKey) {
-        // Es un color conocido (blanco, negro, etc.)
         colorContent.setAttribute('data-translate', knownColorKey);
     } else {
-        // No es un color conocido, usar el hex
         colorContent.setAttribute('data-translate', recentColor.hex);
     }
     
@@ -731,7 +716,8 @@ function renderGradientColors() {
 
     let gradientSection = document.querySelector('[data-section="gradient-colors"]');
 
-    if (COLOR_SYSTEM_CONFIG.enableGradientColorsSection) {
+    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
+    if (PALETTE_PREMIUM_FEATURES) {
         if (!gradientSection) {
             gradientSection = document.createElement('div');
             gradientSection.className = 'menu-content';
@@ -763,7 +749,6 @@ function renderGradientColors() {
         });
 
         attachEventListeners();
-
         setInitialActiveState();
 
     } else {
@@ -966,8 +951,9 @@ function setupCollapsibleSectionEvents() {
             secondaryHeaderContainer.remove();
         }
     });
-
-    if (!COLOR_SYSTEM_CONFIG.enableCollapsibleSections) {
+    
+    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
+    if (!PALETTE_PREMIUM_FEATURES) {
         return;
     }
 
@@ -1013,7 +999,8 @@ function setupCollapsibleSections() {
 }
 
 function toggleSectionCollapse(sectionId) {
-    if (!COLOR_SYSTEM_CONFIG.enableCollapsibleSections) return;
+    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
+    if (!PALETTE_PREMIUM_FEATURES) return;
 
     const sectionContainer = document.querySelector(`.menu-content[data-section="${sectionId}"]`);
     if (!sectionContainer) return;
@@ -1046,7 +1033,8 @@ function toggleSectionCollapse(sectionId) {
 }
 
 function loadCollapsedSectionsState() {
-    if (!COLOR_SYSTEM_CONFIG.enableCollapsibleSections) return;
+    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
+    if (!PALETTE_PREMIUM_FEATURES) return;
     try {
         const storedCollapsed = localStorage.getItem(COLOR_SYSTEM_CONFIG.collapsedSectionsKey);
         if (storedCollapsed) {
@@ -1061,7 +1049,8 @@ function loadCollapsedSectionsState() {
 }
 
 function saveCollapsedSectionsState() {
-    if (!COLOR_SYSTEM_CONFIG.enableCollapsibleSections) return;
+    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
+    if (!PALETTE_PREMIUM_FEATURES) return;
     try {
         localStorage.setItem(COLOR_SYSTEM_CONFIG.collapsedSectionsKey, JSON.stringify(Array.from(colorSystemState.collapsedSections)));
     }
@@ -1071,7 +1060,8 @@ function saveCollapsedSectionsState() {
 }
 
 function applyCollapsedSectionsState() {
-    if (!COLOR_SYSTEM_CONFIG.enableCollapsibleSections) return;
+    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
+    if (!PALETTE_PREMIUM_FEATURES) return;
 
     setTimeout(() => {
         document.querySelectorAll('.menu-content[data-collapsible-section="true"]').forEach(sectionContainer => {
@@ -1262,15 +1252,15 @@ function getColorInfo() {
         currentColor: colorSystemState.currentColor,
         activeColorName: activeColorName,
         totalElements: getElementCount(),
-        totalColors: colorSystemState.colorElements.size + (COLOR_SYSTEM_CONFIG.enableGradientColorsSection ? COLOR_SYSTEM_CONFIG.gradientColors.length : 0),
+        totalColors: colorSystemState.colorElements.size + (PALETTE_PREMIUM_FEATURES ? COLOR_SYSTEM_CONFIG.gradientColors.length : 0),
         recentColorsCount: colorSystemState.recentColors.length,
         recentColors: [...colorSystemState.recentColors],
         currentTheme: colorSystemState.currentTheme,
         isThemeChanging: colorSystemState.isThemeChanging,
         isInitialized: colorSystemState.isInitialized,
-        collapsibleSectionsEnabled: COLOR_SYSTEM_CONFIG.enableCollapsibleSections,
+        collapsibleSectionsEnabled: PALETTE_PREMIUM_FEATURES,
         collapsedSections: Array.from(colorSystemState.collapsedSections),
-        gradientColorsSectionEnabled: COLOR_SYSTEM_CONFIG.enableGradientColorsSection
+        gradientColorsSectionEnabled: PALETTE_PREMIUM_FEATURES
     };
 }
 
@@ -1327,6 +1317,7 @@ function createSearchColorElement(colorData) {
 
 function debugColorSystem() {
     console.group('🎨 Color Text Manager Debug (Enhanced with Translations)');
+    console.log('Premium Features Enabled:', PALETTE_PREMIUM_FEATURES);
     console.log('Current color:', colorSystemState.currentColor);
     console.log('Current theme:', colorSystemState.currentTheme);
     console.log('Auto color would be:', getAutoColor());
@@ -1341,7 +1332,7 @@ function debugColorSystem() {
     console.log('Last active color section (from localStorage):', localStorage.getItem(COLOR_SYSTEM_CONFIG.activeColorSectionKey));
 
     console.group('Collapsible Sections Debug');
-    console.log('Collapsible sections enabled:', COLOR_SYSTEM_CONFIG.enableCollapsibleSections);
+    console.log('Collapsible sections enabled:', PALETTE_PREMIUM_FEATURES);
     console.log('Currently collapsed sections:', Array.from(colorSystemState.collapsedSections));
     document.querySelectorAll('.menu-content[data-collapsible-section="true"]').forEach(section => {
         const sectionId = section.getAttribute('data-section');
@@ -1356,7 +1347,7 @@ function debugColorSystem() {
     console.groupEnd();
 
     console.group('Gradient Colors Section Debug');
-    console.log('Gradient colors section enabled:', COLOR_SYSTEM_CONFIG.enableGradientColorsSection);
+    console.log('Gradient colors section enabled:', PALETTE_PREMIUM_FEATURES);
     const gradientSectionElement = document.querySelector('[data-section="gradient-colors"]');
     console.log('Gradient section element present in DOM:', !!gradientSectionElement);
     console.groupEnd();
@@ -1491,7 +1482,6 @@ window.clearRecentColors = () => {
     }
 };
 function getTranslatedColorNameFromHex(hex) {
-    // Mapeo de colores hex a sus claves de traducción
     const hexToColorKeyMap = {
         '#000000': 'black',
         '#525252': 'dark_gray',
@@ -1521,10 +1511,10 @@ function getTranslatedColorNameFromHex(hex) {
 
     const colorKey = hexToColorKeyMap[hex.toLowerCase()];
     if (colorKey) {
-        return colorKey; // Devuelve la clave para traducción
+        return colorKey;
     }
     
-    return null; // No es un color conocido
+    return null;
 }
 document.addEventListener('DOMContentLoaded', initColorTextSystem);
 
