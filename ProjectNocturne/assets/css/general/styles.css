@@ -722,24 +722,6 @@ body {
     position: relative;
 }
 
-.color-content.invalid-for-theme::before {
-    content: '⚠';
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    background: rgba(255, 152, 0, 0.9);
-    color: white;
-    border-radius: 50%;
-    width: 16px;
-    height: 16px;
-    font-size: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 3;
-    font-weight: bold;
-}
-
 /* Auto color nunca debería ser inválido */
 .color-content.invalid-for-theme .auto-color {
     opacity: 1;
@@ -975,7 +957,7 @@ body {
     box-sizing: border-box;
     width: auto;
     min-width: 100px;
-    max-width: 150px;
+    max-width: 190px;
     padding: 4px 12px;
     border: 1px solid #252627;
     border-radius: 8px;

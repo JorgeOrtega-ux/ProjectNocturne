@@ -14,34 +14,127 @@ const COLOR_SEARCH_CONFIG = {
 // ========== NEW MULTILINGUAL COLOR DATABASE ==========
 const COLOR_DATABASES = {
     'en-us': {
-        'red': '#ff0000', 'green': '#00ff00', 'blue': '#0000ff', 'yellow': '#ffff00', 'orange': '#ffa500', 
-        'purple': '#800080', 'violet': '#8a2be2', 'pink': '#ffc0cb', 'black': '#000000', 'white': '#ffffff', 
-        'gray': '#808080', 'brown': '#a52a2a', 'turquoise': '#40e0d0', 'cyan': '#00ffff', 'magenta': '#ff00ff', 
-        'lime': '#00ff00', 'olive': '#808000', 'navy': '#000080', 'maroon': '#800000', 'silver': '#c0c0c0', 
-        'gold': '#ffd700', 'coral': '#ff7f50', 'salmon': '#fa8072', 'aqua': '#00ffff', 'beige': '#f5f5dc', 
-        'cream': '#fffdd0', 'lavender': '#e6e6fa', 'mint': '#98fb98', 'peach': '#ffcba4', 'indigo': '#4b0082', 
-        'cerulean': '#007ba7', 'emerald': '#50c878', 'jade': '#00a86b', 'teal': '#008080', 'aquamarine': '#7fffd4', 
-        'chartreuse': '#7fff00', 'vermilion': '#e34234', 'amber': '#ffbf00', 'sienna': '#a0522d'
+        'red': { hex: '#ff0000', key: 'base_red' },
+        'green': { hex: '#00ff00', key: 'base_green' },
+        'blue': { hex: '#0000ff', key: 'base_blue' },
+        'yellow': { hex: '#ffff00', key: 'base_yellow' },
+        'orange': { hex: '#ffa500', key: 'base_orange' },
+        'purple': { hex: '#800080', key: 'base_purple' },
+        'violet': { hex: '#8a2be2', key: 'base_violet' },
+        'pink': { hex: '#ffc0cb', key: 'base_pink' },
+        'black': { hex: '#000000', key: 'base_black' },
+        'white': { hex: '#ffffff', key: 'base_white' },
+        'gray': { hex: '#808080', key: 'base_gray' },
+        'brown': { hex: '#a52a2a', key: 'base_brown' },
+        'turquoise': { hex: '#40e0d0', key: 'base_turquoise' },
+        'cyan': { hex: '#00ffff', key: 'base_cyan' },
+        'magenta': { hex: '#ff00ff', key: 'base_magenta' },
+        'lime': { hex: '#00ff00', key: 'base_lime' },
+        'olive': { hex: '#808000', key: 'base_olive' },
+        'navy': { hex: '#000080', key: 'base_navy' },
+        'maroon': { hex: '#800000', key: 'base_maroon' },
+        'silver': { hex: '#c0c0c0', key: 'base_silver' },
+        'gold': { hex: '#ffd700', key: 'base_gold' },
+        'coral': { hex: '#ff7f50', key: 'base_coral' },
+        'salmon': { hex: '#fa8072', key: 'base_salmon' },
+        'aqua': { hex: '#00ffff', key: 'base_aqua' },
+        'beige': { hex: '#f5f5dc', key: 'base_beige' },
+        'cream': { hex: '#fffdd0', key: 'base_cream' },
+        'lavender': { hex: '#e6e6fa', key: 'base_lavender' },
+        'mint': { hex: '#98fb98', key: 'base_mint' },
+        'peach': { hex: '#ffcba4', key: 'base_peach' },
+        'indigo': { hex: '#4b0082', key: 'base_indigo' },
+        'cerulean': { hex: '#007ba7', key: 'base_cerulean' },
+        'emerald': { hex: '#50c878', key: 'base_emerald' },
+        'jade': { hex: '#00a86b', key: 'base_jade' },
+        'teal': { hex: '#008080', key: 'base_teal' },
+        'aquamarine': { hex: '#7fffd4', key: 'base_aquamarine' },
+        'chartreuse': { hex: '#7fff00', key: 'base_chartreuse' },
+        'vermilion': { hex: '#e34234', key: 'base_vermilion' },
+        'amber': { hex: '#ffbf00', key: 'base_amber' },
+        'sienna': { hex: '#a0522d', key: 'base_sienna' }
     },
     'es-mx': {
-        'rojo': '#ff0000', 'verde': '#00ff00', 'azul': '#0000ff', 'amarillo': '#ffff00', 'naranja': '#ffa500', 
-        'púrpura': '#800080', 'violeta': '#8a2be2', 'rosa': '#ffc0cb', 'negro': '#000000', 'blanco': '#ffffff', 
-        'gris': '#808080', 'marrón': '#a52a2a', 'turquesa': '#40e0d0', 'cian': '#00ffff', 'magenta': '#ff00ff', 
-        'lima': '#00ff00', 'oliva': '#808000', 'azul marino': '#000080', 'granate': '#800000', 'plata': '#c0c0c0', 
-        'dorado': '#ffd700', 'coral': '#ff7f50', 'salmón': '#fa8072', 'aqua': '#00ffff', 'beige': '#f5f5dc', 
-        'crema': '#fffdd0', 'lavanda': '#e6e6fa', 'menta': '#98fb98', 'durazno': '#ffcba4', 'índigo': '#4b0082', 
-        'cerúleo': '#007ba7', 'esmeralda': '#50c878', 'jade': '#00a86b', 'verde azulado': '#008080', 'aguamarina': '#7fffd4', 
-        'cartujo': '#7fff00', 'bermellón': '#e34234', 'ámbar': '#ffbf00', 'siena': '#a0522d'
+        'rojo': { hex: '#ff0000', key: 'base_red' },
+        'verde': { hex: '#00ff00', key: 'base_green' },
+        'azul': { hex: '#0000ff', key: 'base_blue' },
+        'amarillo': { hex: '#ffff00', key: 'base_yellow' },
+        'naranja': { hex: '#ffa500', key: 'base_orange' },
+        'púrpura': { hex: '#800080', key: 'base_purple' },
+        'violeta': { hex: '#8a2be2', key: 'base_violet' },
+        'rosa': { hex: '#ffc0cb', key: 'base_pink' },
+        'negro': { hex: '#000000', key: 'base_black' },
+        'blanco': { hex: '#ffffff', key: 'base_white' },
+        'gris': { hex: '#808080', key: 'base_gray' },
+        'marrón': { hex: '#a52a2a', key: 'base_brown' },
+        'turquesa': { hex: '#40e0d0', key: 'base_turquoise' },
+        'cian': { hex: '#00ffff', key: 'base_cyan' },
+        'magenta': { hex: '#ff00ff', key: 'base_magenta' },
+        'lima': { hex: '#00ff00', key: 'base_lime' },
+        'oliva': { hex: '#808000', key: 'base_olive' },
+        'azul marino': { hex: '#000080', key: 'base_navy' },
+        'granate': { hex: '#800000', key: 'base_maroon' },
+        'plata': { hex: '#c0c0c0', key: 'base_silver' },
+        'dorado': { hex: '#ffd700', key: 'base_gold' },
+        'coral': { hex: '#ff7f50', key: 'base_coral' },
+        'salmón': { hex: '#fa8072', key: 'base_salmon' },
+        'aqua': { hex: '#00ffff', key: 'base_aqua' },
+        'beige': { hex: '#f5f5dc', key: 'base_beige' },
+        'crema': { hex: '#fffdd0', key: 'base_cream' },
+        'lavanda': { hex: '#e6e6fa', key: 'base_lavender' },
+        'menta': { hex: '#98fb98', key: 'base_mint' },
+        'durazno': { hex: '#ffcba4', key: 'base_peach' },
+        'índigo': { hex: '#4b0082', key: 'base_indigo' },
+        'cerúleo': { hex: '#007ba7', key: 'base_cerulean' },
+        'esmeralda': { hex: '#50c878', key: 'base_emerald' },
+        'jade': { hex: '#00a86b', key: 'base_jade' },
+        'verde azulado': { hex: '#008080', key: 'base_teal' },
+        'aguamarina': { hex: '#7fffd4', key: 'base_aquamarine' },
+        'cartujo': { hex: '#7fff00', key: 'base_chartreuse' },
+        'bermellón': { hex: '#e34234', key: 'base_vermilion' },
+        'ámbar': { hex: '#ffbf00', key: 'base_amber' },
+        'siena': { hex: '#a0522d', key: 'base_sienna' }
     },
     'fr-fr': {
-        'rouge': '#ff0000', 'vert': '#00ff00', 'bleu': '#0000ff', 'jaune': '#ffff00', 'orange': '#ffa500', 
-        'violet': '#800080', 'violine': '#8a2be2', 'rose': '#ffc0cb', 'noir': '#000000', 'blanc': '#ffffff', 
-        'gris': '#808080', 'brun': '#a52a2a', 'turquoise': '#40e0d0', 'cyan': '#00ffff', 'magenta': '#ff00ff', 
-        'citron vert': '#00ff00', 'olive': '#808000', 'bleu marine': '#000080', 'marron': '#800000', 'argent': '#c0c0c0', 
-        'or': '#ffd700', 'corail': '#ff7f50', 'saumon': '#fa8072', 'aqua': '#00ffff', 'beige': '#f5f5dc', 
-        'crème': '#fffdd0', 'lavande': '#e6e6fa', 'menthe': '#98fb98', 'pêche': '#ffcba4', 'indigo': '#4b0082', 
-        'céruléen': '#007ba7', 'émeraude': '#50c878', 'jade': '#00a86b', 'sarcelle': '#008080', 'aigue-marine': '#7fffd4', 
-        'chartreuse': '#7fff00', 'vermillon': '#e34234', 'ambre': '#ffbf00', 'terre de sienne': '#a0522d'
+        'rouge': { hex: '#ff0000', key: 'base_red' },
+        'vert': { hex: '#00ff00', key: 'base_green' },
+        'bleu': { hex: '#0000ff', key: 'base_blue' },
+        'jaune': { hex: '#ffff00', key: 'base_yellow' },
+        'orange': { hex: '#ffa500', key: 'base_orange' },
+        'violet': { hex: '#800080', key: 'base_purple' },
+        'violine': { hex: '#8a2be2', key: 'base_violet' },
+        'rose': { hex: '#ffc0cb', key: 'base_pink' },
+        'noir': { hex: '#000000', key: 'base_black' },
+        'blanc': { hex: '#ffffff', key: 'base_white' },
+        'gris': { hex: '#808080', key: 'base_gray' },
+        'brun': { hex: '#a52a2a', key: 'base_brown' },
+        'turquoise': { hex: '#40e0d0', key: 'base_turquoise' },
+        'cyan': { hex: '#00ffff', key: 'base_cyan' },
+        'magenta': { hex: '#ff00ff', key: 'base_magenta' },
+        'citron vert': { hex: '#00ff00', key: 'base_lime' },
+        'olive': { hex: '#808000', key: 'base_olive' },
+        'bleu marine': { hex: '#000080', key: 'base_navy' },
+        'marron': { hex: '#800000', key: 'base_maroon' },
+        'argent': { hex: '#c0c0c0', key: 'base_silver' },
+        'or': { hex: '#ffd700', key: 'base_gold' },
+        'corail': { hex: '#ff7f50', key: 'base_coral' },
+        'saumon': { hex: '#fa8072', key: 'base_salmon' },
+        'aqua': { hex: '#00ffff', key: 'base_aqua' },
+        'beige': { hex: '#f5f5dc', key: 'base_beige' },
+        'crème': { hex: '#fffdd0', key: 'base_cream' },
+        'lavande': { hex: '#e6e6fa', key: 'base_lavender' },
+        'menthe': { hex: '#98fb98', key: 'base_mint' },
+        'pêche': { hex: '#ffcba4', key: 'base_peach' },
+        'indigo': { hex: '#4b0082', key: 'base_indigo' },
+        'céruléen': { hex: '#007ba7', key: 'base_cerulean' },
+        'émeraude': { hex: '#50c878', key: 'base_emerald' },
+        'jade': { hex: '#00a86b', key: 'base_jade' },
+        'sarcelle': { hex: '#008080', key: 'base_teal' },
+        'aigue-marine': { hex: '#7fffd4', key: 'base_aquamarine' },
+        'chartreuse': { hex: '#7fff00', key: 'base_chartreuse' },
+        'vermilion': { hex: '#e34234', key: 'base_vermilion' },
+        'ambre': { hex: '#ffbf00', key: 'base_amber' },
+        'terre de sienne': { hex: '#a0522d', key: 'base_sienna' }
     }
 };
 
@@ -159,8 +252,7 @@ function initColorSearch() {
     }
 
     setupSearchInput();
-    setupClickOutsideHandler();
-
+    // La función setupClickOutsideHandler() ha sido eliminada.
     searchState.isInitialized = true;
 }
 
@@ -185,26 +277,7 @@ function updateSearchPlaceholder() {
     }
 }
 
-function setupClickOutsideHandler() {
-    document.addEventListener('click', (e) => {
-        const searchInput = document.querySelector(COLOR_SEARCH_CONFIG.searchInput);
-        const paletteMenu = e.target.closest('.menu-paletteColors');
-
-        if (!searchInput || !paletteMenu) return;
-
-        const searchResultsWrapper = document.querySelector(COLOR_SEARCH_CONFIG.searchColorsWrapper);
-        const clickedInsideSearchInput = searchInput.contains(e.target);
-        const clickedInsideSearchResults = searchResultsWrapper && searchResultsWrapper.contains(e.target);
-
-        if (paletteMenu.contains(e.target) && !clickedInsideSearchInput && !clickedInsideSearchResults) {
-            if (searchState.currentQuery) {
-                clearSearchColors();
-            }
-        } else if (!paletteMenu.contains(e.target)) {
-            clearSearchColors();
-        }
-    });
-}
+// La función setupClickOutsideHandler() ha sido eliminada.
 
 function handleSearchInput(e) {
     const query = e.target.value.trim();
@@ -234,17 +307,12 @@ function handleSearchFocus(e) {
 }
 
 function handleSearchBlur(e) {
+    // Esta función podría eliminarse o simplificarse si ya no se necesita
+    // la lógica de "click outside". Por ahora la mantenemos para la lógica del foco.
     setTimeout(() => {
         const searchInput = document.querySelector(COLOR_SEARCH_CONFIG.searchInput);
-        const searchResultsWrapper = document.querySelector(COLOR_SEARCH_CONFIG.searchColorsWrapper);
-
-        if (!searchInput || !searchResultsWrapper) return;
-
-        const relatedTarget = e.relatedTarget;
-        const clickedInsideSearchResults = relatedTarget && searchResultsWrapper.contains(relatedTarget);
-
-        if (!searchInput.value.trim() && !clickedInsideSearchResults) {
-            clearSearchColors();
+        if (!searchInput || !searchInput.value.trim()) {
+           // No hacer nada al perder el foco si no hay un clic fuera explícito
         }
     }, 150);
 }
@@ -318,28 +386,26 @@ function processSearchQuery(query) {
         tones: []
     };
 
-    const baseColor = getBaseColorFromQuery(query);
-    if (!baseColor) {
+    const baseColorData = getBaseColorFromQuery(query);
+    if (!baseColorData) {
         return results;
     }
 
     try {
-        const chromaColor = chroma(baseColor);
+        const chromaColor = chroma(baseColorData.hex);
         const isValid = isValidForTheme(chromaColor.hex());
 
+        const matchData = {
+            hex: chromaColor.hex(),
+            name: getColorName(baseColorData.hex, query),
+            color: chromaColor,
+            translationKey: baseColorData.key || null
+        };
+
         if (isValid) {
-            results.directMatch = {
-                hex: chromaColor.hex(),
-                name: getColorName(baseColor, query),
-                color: chromaColor
-            };
+            results.directMatch = matchData;
         } else {
-            results.directMatch = {
-                hex: chromaColor.hex(),
-                name: getColorName(baseColor, query),
-                color: chromaColor,
-                invalidForTheme: true
-            };
+            results.directMatch = { ...matchData, invalidForTheme: true };
         }
 
         results.lightVariations = generateLightVariations(chromaColor).filter(c => isValidForTheme(c.hex));
@@ -349,8 +415,6 @@ function processSearchQuery(query) {
         results.warmVariations = generateWarmVariations(chromaColor).filter(c => isValidForTheme(c.hex));
         results.coolVariations = generateCoolVariations(chromaColor).filter(c => isValidForTheme(c.hex));
         
-        // ✅ LÓGICA CONDICIONAL MODIFICADA
-        // Consulta la configuración centralizada en palette-colors.js
         const arePremiumFeaturesEnabled = window.colorTextManager && typeof window.colorTextManager.arePremiumFeaturesEnabled === 'function' 
                                       ? window.colorTextManager.arePremiumFeaturesEnabled() 
                                       : false;
@@ -387,7 +451,7 @@ function getBaseColorFromQuery(query) {
     const lowerQuery = query.toLowerCase().trim();
 
     if (/^#?([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})$/.test(lowerQuery)) {
-        return lowerQuery.startsWith('#') ? lowerQuery : '#' + lowerQuery;
+        return { hex: lowerQuery.startsWith('#') ? lowerQuery : '#' + lowerQuery, key: null };
     }
 
     const lang = (typeof window.getCurrentLanguage === 'function') ? window.getCurrentLanguage() : 'en-us';
@@ -409,9 +473,9 @@ function getBaseColorFromQuery(query) {
     for (const dbLang in COLOR_DATABASES) {
         if (Object.prototype.hasOwnProperty.call(COLOR_DATABASES, dbLang)) {
             const db = COLOR_DATABASES[dbLang];
-            for (const [name, hex] of Object.entries(db)) {
+            for (const [name, data] of Object.entries(db)) {
                 if (name.includes(lowerQuery) || lowerQuery.includes(name)) {
-                    return hex;
+                    return data;
                 }
             }
         }
@@ -419,7 +483,7 @@ function getBaseColorFromQuery(query) {
 
     try {
         const color = chroma(lowerQuery);
-        return color.hex();
+        return { hex: color.hex(), key: null };
     } catch (error) {
         // Not a valid CSS color name
     }
@@ -431,19 +495,19 @@ function getColorName(colorHex, originalQuery) {
     const lowerHex = colorHex.toLowerCase();
 
     const englishDb = COLOR_DATABASES['en-us'];
-    for (const [name, hex] of Object.entries(englishDb)) {
-        if (hex.toLowerCase() === lowerHex) {
+    for (const [name, data] of Object.entries(englishDb)) {
+        if (data.hex.toLowerCase() === lowerHex) {
             return name;
         }
     }
-
+    
     for (const dbLang in COLOR_DATABASES) {
         if (Object.prototype.hasOwnProperty.call(COLOR_DATABASES, dbLang)) {
             const db = COLOR_DATABASES[dbLang];
-            for (const [name, hex] of Object.entries(db)) {
-                if (hex.toLowerCase() === lowerHex) {
-                    for (const [enName, enHex] of Object.entries(englishDb)) {
-                        if (enHex.toLowerCase() === lowerHex) {
+            for (const [name, data] of Object.entries(db)) {
+                if (data.hex.toLowerCase() === lowerHex) {
+                    for (const [enName, enData] of Object.entries(englishDb)) {
+                        if (enData.hex.toLowerCase() === lowerHex) {
                             return enName;
                         }
                     }

@@ -143,6 +143,8 @@
     border-color: #ffffff20; /* Active border for colors in dark mode */
 }
 
+
+
 .dark-mode .black-color {
     border: 1px solid #ffffff80; /* Specific border for black in dark mode */
 }

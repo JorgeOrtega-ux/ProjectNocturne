@@ -1271,22 +1271,30 @@ function createSearchColorElement(colorData) {
     colorContent.setAttribute('data-color', colorData.name || colorData.hex);
     colorContent.setAttribute('data-section', 'search');
 
-    const isSearchGeneratedName = (colorData.name && (
-        colorData.name.includes('Lighter') ||
-        colorData.name.includes('Darker') ||
-        colorData.name.includes('More Saturated') ||
-        colorData.name.includes('Less Saturated') ||
-        colorData.name.includes('Warmer') ||
-        colorData.name.includes('Cooler') ||
-        colorData.name.includes('Shade') ||
-        colorData.name.includes('Tint') ||
-        colorData.name.includes('Tone')
-    ));
-
-    if (isSearchGeneratedName) {
-        colorContent.setAttribute('data-translate', colorData.hex);
+    if (colorData.translationKey) {
+        colorContent.setAttribute('data-translate', colorData.translationKey);
     } else {
-        colorContent.setAttribute('data-translate', colorData.name || colorData.hex);
+        const knownColorKey = getTranslatedColorNameFromHex(colorData.hex);
+        if (knownColorKey) {
+            colorContent.setAttribute('data-translate', knownColorKey);
+        } else {
+            const isSearchGeneratedName = (colorData.name && (
+                colorData.name.includes('Lighter') ||
+                colorData.name.includes('Darker') ||
+                colorData.name.includes('More Saturated') ||
+                colorData.name.includes('Less Saturated') ||
+                colorData.name.includes('Warmer') ||
+                colorData.name.includes('Cooler') ||
+                colorData.name.includes('Shade') ||
+                colorData.name.includes('Tint') ||
+                colorData.name.includes('Tone')
+            ));
+            if (isSearchGeneratedName) {
+                colorContent.setAttribute('data-translate', colorData.hex);
+            } else {
+                colorContent.setAttribute('data-translate', colorData.name || colorData.hex);
+            }
+        }
     }
 
     colorContent.setAttribute('data-translate-category', 'tooltips');
@@ -1483,6 +1491,15 @@ window.clearRecentColors = () => {
 };
 function getTranslatedColorNameFromHex(hex) {
     const hexToColorKeyMap = {
+        '#ff0000': 'base_red',
+        '#00ff00': 'base_green',
+        '#0000ff': 'base_blue',
+        '#ffff00': 'base_yellow',
+        '#ffa500': 'base_orange',
+        '#800080': 'base_purple',
+        '#ffc0cb': 'base_pink',
+        '#a52a2a': 'base_brown',
+        '#808080': 'base_gray',
         '#000000': 'black',
         '#525252': 'dark_gray',
         '#757575': 'medium_gray',
