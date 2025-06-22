@@ -314,10 +314,7 @@ function handleSearchBlur(e) {
 }
 
 function handleSearchKeydown(e) {
-    if (e.key === 'Escape') {
-        clearSearchColors();
-        e.target.blur();
-    } else if (e.key === 'Enter') {
+    if (e.key === 'Enter') {
         e.preventDefault();
         const query = e.target.value.trim();
         if (query) {
@@ -325,8 +322,14 @@ function handleSearchKeydown(e) {
         } else {
             clearSearchColors();
         }
+    } else if (e.key === 'Escape') {
+        // CORRECCIÓN: Simplemente desenfocar el input.
+        // El manejador global de "Esc" se encargará de cerrar el módulo,
+        // lo cual disparará el evento 'moduleDeactivated' que llama a 'clearSearchColors' una sola vez.
+        e.target.blur();
     }
 }
+
 
 // ========== MAIN SEARCH LOGIC - ONLY SEARCHED COLOR VARIATIONS ==========
 
@@ -901,6 +904,8 @@ function hideSearchSectionWrapper() {
 }
 
 function clearSearchColors() {
+    console.log('🎨 Búsqueda de colores limpiada y estado reiniciado.');
+
     const searchInput = document.querySelector(COLOR_SEARCH_CONFIG.searchInput);
     if (searchInput) {
         searchInput.value = '';

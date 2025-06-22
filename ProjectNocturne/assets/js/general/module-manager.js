@@ -127,9 +127,21 @@ const domCache = {
 
 let getTranslation = null;
 
+// ========== EVENT DISPATCHER ==========
+function dispatchModuleEvent(eventName, detail = {}) {
+    const event = new CustomEvent(eventName, {
+        detail: {
+            ...detail,
+            timestamp: Date.now()
+        }
+    });
+    document.dispatchEvent(event);
+}
+
+
 // ========== CENTRALIZED CANCELLATION FUNCTION ==========
 
-function cancelAllActiveProcesses(reason = 'module-close') {
+function cancelAllActiveProcesses(reason = 'unknown') {
     let processesCancelled = false;
     
     if (isThemeChanging()) {
@@ -144,11 +156,6 @@ function cancelAllActiveProcesses(reason = 'module-close') {
         
         cleanLanguageChangeStates();
         processesCancelled = true;
-    }
-
-    if (typeof clearSearchColors === 'function') {
-        console.log(`🚫 Clearing color search (${reason})`);
-        clearSearchColors();
     }
     
     return processesCancelled;
@@ -205,12 +212,9 @@ function cleanLanguageChangeStates() {
 // ========== SIMPLIFIED FUNCTIONS ==========
 
 function cancelActiveProcessesOnModuleClose(moduleName) {
-    return cancelAllActiveProcesses('module-close');
+    return cancelAllActiveProcesses(`module-close:${moduleName}`);
 }
 
-function forceCleanAllProcesses() {
-    return cancelAllActiveProcesses('force-clean');
-}
 
 // ========== MAIN INITIALIZATION ==========
 
@@ -297,13 +301,15 @@ function activateModule(moduleName) {
     moduleState.isModuleChanging = true;
     console.log('🔧 Activating module:', normalizedName);
 
-    deactivateAllModules();
+    deactivateAllModules({ source: 'new-module-activation' });
 
     if (normalizedName === 'controlCenter') {
         activateControlCenter();
     } else if (normalizedName === 'overlayContainer') {
         activateOverlayContainer(moduleName);
     }
+    
+    dispatchModuleEvent('moduleActivated', { module: moduleName });
 
     setTimeout(() => {
         logModuleStates();
@@ -338,16 +344,23 @@ function toggleModule(moduleName) {
     }
 
     const isActive = moduleState.modules[normalizedName]?.active || false;
-
+    
     if (isActive) {
-        deactivateModule(normalizedName);
+        const overlayContainer = domCache.overlayContainer.module;
+        const currentToggle = getToggleFromOverlay(moduleState.modules.overlayContainer.currentOverlay);
+        if (normalizedName === 'overlayContainer' && currentToggle !== moduleName) {
+             activateModule(moduleName);
+        } else {
+             deactivateModule(normalizedName);
+        }
     } else {
         activateModule(moduleName);
     }
 }
 
-function deactivateAllModules() {
-    forceCleanAllProcesses();
+function deactivateAllModules(options = {}) {
+    const { source = 'unknown' } = options;
+    cancelAllActiveProcesses(`deactivateAll due to ${source}`);
 
     Object.keys(moduleState.modules).forEach(moduleName => {
         if (moduleState.modules[moduleName].active) {
@@ -432,12 +445,16 @@ function performStandardDeactivation(moduleName, source) {
 }
 
 function performModuleDeactivation(moduleName) {
+    let deactivatedToggle = null;
+    const module = moduleState.modules[moduleName];
+
     if (moduleName === 'controlCenter') {
         const controlCenterModule = domCache.controlCenter.module;
         if (controlCenterModule) {
             controlCenterModule.classList.remove('active');
             controlCenterModule.classList.add('disabled');
-            moduleState.modules.controlCenter.active = false;
+            module.active = false;
+            deactivatedToggle = 'toggleControlCenter';
             resetControlCenterToDefaultMenu();
         }
     } else if (moduleName === 'overlayContainer') {
@@ -445,12 +462,18 @@ function performModuleDeactivation(moduleName) {
         if (overlayContainer) {
             overlayContainer.classList.remove('active');
             overlayContainer.classList.add('disabled');
-            moduleState.modules.overlayContainer.active = false;
+            module.active = false;
+            deactivatedToggle = getToggleFromOverlay(module.currentOverlay);
             hideAllOverlays();
-            moduleState.modules.overlayContainer.currentOverlay = null;
+            module.currentOverlay = null;
         }
     }
+    
+    if (deactivatedToggle) {
+        dispatchModuleEvent('moduleDeactivated', { module: deactivatedToggle });
+    }
 }
+
 
 // ========== MENU AND OVERLAY MANAGEMENT ==========
 
@@ -526,6 +549,17 @@ function getOverlayFromToggle(toggleName) {
 
     return toggleToOverlayMap[toggleName] || null;
 }
+
+function getToggleFromOverlay(overlayName) {
+    const overlayToToggleMap = {
+       'menuAlarm': 'toggleMenuAlarm',
+       'menuTimer': 'toggleMenuTimer',
+       'menuWorldClock': 'toggleMenuWorldClock',
+       'menuPaletteColors': 'togglePaletteColors'
+   };
+   return overlayToToggleMap[overlayName] || null;
+}
+
 
 function performMobileCloseAnimation(element, callback) {
     element.classList.add('closing', 'slide-out-mobile');
@@ -1041,13 +1075,14 @@ function isAnyProcessActive() {
 // ========== GLOBAL ESCAPE KEY HANDLER ==========
 
 function handleEscapeKey() {
-    const processesCancelled = cancelAllActiveProcesses('escape-key');
+    if (isAnyProcessActive()) {
+        cancelAllActiveProcesses('escape-key');
+        return;
+    }
 
-    if (!processesCancelled) {
-        const activeModule = getActiveModule();
-        if (activeModule) {
-            deactivateModule(activeModule, { source: 'escape-key' });
-        }
+    const activeModule = getActiveModule();
+    if (activeModule) {
+        deactivateModule(activeModule, { source: 'escape-key' });
     }
 }
 
