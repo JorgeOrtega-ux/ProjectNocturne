@@ -112,10 +112,7 @@ function handleThemeColorCompatibility() {
     colorSystemState.isThemeChanging = true;
 
     if (colorSystemState.currentColor === 'auto') {
-        // ✅ MEJORADO: Aplicar auto color y luego renderizar recientes
         applyAutoColor();
-        
-        // Renderizar recientes después de un pequeño delay
         setTimeout(() => {
             renderRecentColors('theme_change');
         }, 100);
@@ -132,7 +129,6 @@ function handleThemeColorCompatibility() {
             localStorage.setItem(COLOR_SYSTEM_CONFIG.activeColorKey, 'auto');
             localStorage.setItem(COLOR_SYSTEM_CONFIG.activeColorSectionKey, 'auto');
             
-            // Renderizar recientes después de cambiar a auto
             setTimeout(() => {
                 renderRecentColors('theme_change');
             }, 100);
@@ -168,15 +164,14 @@ function getAutoColor() {
     const currentTheme = colorSystemState.currentTheme;
     return currentTheme === 'dark' ? '#ffffff' : '#000000';
 }
-
 function applyAutoColor() {
     const autoColorHex = getAutoColor();
     applyColorToElements(autoColorHex);
 
-    // ✅ MEJORADO: Solo agregar a recientes si no estamos inicializando
+    // ✅ ARREGLO: Al agregar a recientes, usar la clave de color correcto en lugar de 'auto'
     if (colorSystemState.isInitialized) {
-        const autoColorName = getTranslation('auto', 'tooltips');
-        addToRecentColors(autoColorHex, autoColorName, 'auto', true);
+        const colorKey = getTranslatedColorNameFromHex(autoColorHex);
+        addToRecentColors(autoColorHex, colorKey || autoColorHex, 'auto', true);
     }
 
     const autoElement = document.querySelector('.color-content[data-color="auto"]');
@@ -184,11 +179,11 @@ function applyAutoColor() {
         setActiveColorInAllSections(autoElement);
     }
 
-    // Solo disparar evento si está inicializado
     if (colorSystemState.isInitialized) {
         dispatchColorChangeEvent({ hex: autoColorHex, name: 'auto' });
     }
 }
+
 
 // ========== MAIN INITIALIZATION ==========
 
@@ -354,31 +349,42 @@ function updateSingleColorTooltip(element) {
     } else if (colorHex === 'auto') {
         tooltipText = getTranslation('auto', 'tooltips');
     } else {
-        const isSearchGeneratedName = (colorName && (
-            colorName.includes('Lighter') ||
-            colorName.includes('Darker') ||
-            colorName.includes('More Saturated') ||
-            colorName.includes('Less Saturated') ||
-            colorName.includes('Warmer') ||
-            colorName.includes('Cooler') ||
-            colorName.includes('Shade') ||
-            colorName.includes('Tint') ||
-            colorName.includes('Tone')
-        ));
-
-        if (colorSection === 'search' || (colorSection === 'recent' && isSearchGeneratedName)) {
-            tooltipText = colorHex;
+        // ✅ ARREGLO PRINCIPAL: Verificar si el color tiene nombre traducido
+        const knownColorKey = getTranslatedColorNameFromHex(colorHex);
+        
+        if (knownColorKey) {
+            // Es un color conocido, usar su traducción
+            tooltipText = getTranslation(knownColorKey, 'tooltips');
         } else {
-            const translatedName = getTranslation(baseTooltipKey, 'tooltips');
-            const isPredefinedColorName = (typeof window.getTranslation === 'function' && window.getTranslation(baseTooltipKey, 'tooltips') !== baseTooltipKey);
+            // No es un color conocido, verificar si es de búsqueda
+            const isSearchGeneratedName = (colorName && (
+                colorName.includes('Lighter') ||
+                colorName.includes('Darker') ||
+                colorName.includes('More Saturated') ||
+                colorName.includes('Less Saturated') ||
+                colorName.includes('Warmer') ||
+                colorName.includes('Cooler') ||
+                colorName.includes('Shade') ||
+                colorName.includes('Tint') ||
+                colorName.includes('Tone')
+            ));
 
-            if (isPredefinedColorName) {
-                tooltipText = translatedName;
-            } else {
+            if (colorSection === 'search' || (colorSection === 'recent' && isSearchGeneratedName)) {
                 tooltipText = colorHex;
+            } else {
+                // Intentar traducir con la clave base, si no funciona usar hex
+                const translatedName = getTranslation(baseTooltipKey, 'tooltips');
+                const isPredefinedColorName = (translatedName !== baseTooltipKey);
+
+                if (isPredefinedColorName) {
+                    tooltipText = translatedName;
+                } else {
+                    tooltipText = colorHex;
+                }
             }
         }
 
+        // Agregar texto de no disponible si aplica
         if (element.classList.contains('color-content') && !isValidForTheme(colorHex)) {
             const unavailableText = getUnavailableText();
             if (unavailableText && unavailableText !== 'color_unavailable') {
@@ -388,8 +394,10 @@ function updateSingleColorTooltip(element) {
             }
         }
     }
+    
     element.setAttribute('data-tooltip', tooltipText);
 }
+
 
 // ========== STORAGE MANAGEMENT ==========
 
@@ -432,11 +440,11 @@ function loadStoredData() {
 
 function initializeDefaultRecentColors() {
     const autoColorHex = getAutoColor();
-    const autoColorName = getTranslation('auto', 'tooltips');
+    const colorKey = getTranslatedColorNameFromHex(autoColorHex);
 
     colorSystemState.recentColors = [{
         hex: autoColorHex,
-        name: autoColorName,
+        name: colorKey || autoColorHex, // ✅ USAR CLAVE DE COLOR CORRECTO
         timestamp: Date.now()
     }];
     saveRecentColors();
@@ -481,14 +489,19 @@ function addToRecentColors(colorHex, colorNameForRecent, source = 'manual', forc
 
     if (colorHex === 'auto') {
         actualHex = getAutoColor();
-        actualName = getTranslation('auto', 'tooltips');
+        // ✅ ARREGLO: Siempre usar el nombre traducido del color real para auto
+        actualName = getTranslatedColorNameFromHex(actualHex); // Nueva función
     }
     else if (isGradientColor(colorHex)) {
         const gradient = COLOR_SYSTEM_CONFIG.gradientColors.find(g => g.hex === colorHex);
         actualName = gradient ? gradient.name : colorNameForRecent;
     } else {
-        const translatedNameCheck = getTranslation(colorNameForRecent, 'tooltips');
-        if (translatedNameCheck === colorNameForRecent && colorNameForRecent !== colorHex) {
+        // ✅ ARREGLO: Para colores sólidos, verificar si es un color conocido
+        const knownColorName = getTranslatedColorNameFromHex(colorHex);
+        if (knownColorName) {
+            actualName = knownColorName;
+        } else {
+            // Si no es un color conocido, usar el hex como nombre
             actualName = colorHex;
         }
     }
@@ -505,14 +518,14 @@ function addToRecentColors(colorHex, colorNameForRecent, source = 'manual', forc
 
         colorSystemState.recentColors.unshift({
             hex: actualHex,
-            name: actualName,
+            name: actualName, // ✅ AHORA USA EL NOMBRE CORREGIDO
             timestamp: Date.now()
         });
         needsReRender = true;
     } else if (!shouldMoveToFront && existingIndex === -1) {
         colorSystemState.recentColors.unshift({
             hex: actualHex,
-            name: actualName,
+            name: actualName, // ✅ AHORA USA EL NOMBRE CORREGIDO
             timestamp: Date.now()
         });
         needsReRender = true;
@@ -523,10 +536,8 @@ function addToRecentColors(colorHex, colorNameForRecent, source = 'manual', forc
             colorSystemState.recentColors = colorSystemState.recentColors.slice(0, COLOR_SYSTEM_CONFIG.maxRecentColors);
         }
         
-        // ✅ ARREGLO CRÍTICO: Guardar siempre, renderizar condicionalmente
         saveRecentColors();
         
-        // Solo renderizar si no estamos en medio de un cambio de tema
         if (source !== 'theme_change' && !colorSystemState.isThemeChanging) {
             renderRecentColors(source);
         }
@@ -578,17 +589,20 @@ function createRecentColorElement(recentColor) {
     colorContent.setAttribute('data-color', recentColor.name);
     colorContent.setAttribute('data-section', 'recent');
 
-    const translatedNameCheck = getTranslation(recentColor.name, 'tooltips');
-    if (translatedNameCheck === recentColor.name) {
-        colorContent.setAttribute('data-translate', recentColor.hex);
+    // ✅ ARREGLO: Usar siempre la clave de traducción correcta
+    const knownColorKey = getTranslatedColorNameFromHex(recentColor.hex);
+    if (knownColorKey) {
+        // Es un color conocido (blanco, negro, etc.)
+        colorContent.setAttribute('data-translate', knownColorKey);
     } else {
-        colorContent.setAttribute('data-translate', recentColor.name);
+        // No es un color conocido, usar el hex
+        colorContent.setAttribute('data-translate', recentColor.hex);
     }
+    
     colorContent.setAttribute('data-translate-category', 'tooltips');
     colorContent.setAttribute('data-translate-target', 'tooltip');
 
     updateSingleColorTooltip(colorContent);
-
     colorContent.removeAttribute('title');
 
     const colorDiv = document.createElement('div');
@@ -607,6 +621,7 @@ function createRecentColorElement(recentColor) {
     colorContent.appendChild(colorDiv);
     return colorContent;
 }
+
 
 function setupRecentColorEvents() {
     const recentColorElements = document.querySelectorAll('.recent-color');
@@ -1475,7 +1490,42 @@ window.clearRecentColors = () => {
         console.warn('ColorTextManager not initialized.');
     }
 };
+function getTranslatedColorNameFromHex(hex) {
+    // Mapeo de colores hex a sus claves de traducción
+    const hexToColorKeyMap = {
+        '#000000': 'black',
+        '#525252': 'dark_gray',
+        '#757575': 'medium_gray',
+        '#a8a8a8': 'light_gray',
+        '#dbdbdb': 'very_light_gray',
+        '#ffffff': 'white',
+        '#ff2f2f': 'bright_red',
+        '#ff5555': 'coral_red',
+        '#ff64c2': 'pink',
+        '#ca6ae4': 'lavender_pink',
+        '#8a50ff': 'purple',
+        '#5c15e9': 'violet',
+        '#0095b0': 'dark_turquoise',
+        '#0abedd': 'aqua_blue',
+        '#5adfe4': 'turquoise_blue',
+        '#36b4ff': 'sky_blue',
+        '#506fff': 'royal_blue',
+        '#0048ab': 'cobalt_blue',
+        '#00bd61': 'green',
+        '#7cd755': 'grass_green',
+        '#bfff70': 'lime_green',
+        '#ffdc57': 'yellow',
+        '#ffb366': 'peach',
+        '#ff8f4b': 'orange'
+    };
 
+    const colorKey = hexToColorKeyMap[hex.toLowerCase()];
+    if (colorKey) {
+        return colorKey; // Devuelve la clave para traducción
+    }
+    
+    return null; // No es un color conocido
+}
 document.addEventListener('DOMContentLoaded', initColorTextSystem);
 
 // ========== EXPORTS ==========
