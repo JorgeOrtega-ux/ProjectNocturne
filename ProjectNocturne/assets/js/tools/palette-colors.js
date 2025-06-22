@@ -36,7 +36,7 @@ const COLOR_SYSTEM_CONFIG = {
     moveRecentToFront: true,
 };
 
-const PALETTE_PREMIUM_FEATURES = false;
+const PALETTE_PREMIUM_FEATURES = true;
 
 
 // ========== CENTRALIZED STATE ==========

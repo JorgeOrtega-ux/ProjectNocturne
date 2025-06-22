@@ -1108,6 +1108,7 @@ body {
 .menu-content-general {
     width: auto;
     height: auto;
+    text-align: center;
     padding-top: 8px;
     padding-bottom: 0;
 }
