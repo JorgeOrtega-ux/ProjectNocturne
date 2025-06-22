@@ -30,12 +30,10 @@ const COLOR_SYSTEM_CONFIG = {
         { name: 'magic_purple', hex: 'linear-gradient(90deg, #515ada 0%, #efd5ff 100%)' },
         { name: 'soft_lavender', hex: 'linear-gradient(90deg, #d9e7ff 0%, #e3ffe7 100%)' }
     ],
-    // ✅ SE HAN ELIMINADO LAS LET ANTERIORES Y SE USA LA NUEVA CONSTANTE GLOBAL
     collapsedSectionsKey: 'collapsed-color-sections',
     moveRecentToFront: true,
 };
 
-// ✅ NUEVA CONSTANTE ÚNICA PARA CONTROLAR TODAS LAS FUNCIONES PREMIUM
 const PALETTE_PREMIUM_FEATURES = true;
 
 
@@ -235,7 +233,6 @@ function initColorTextSystem() {
         isValidForTheme: isValidForTheme,
         getCurrentTheme: () => colorSystemState.currentTheme,
         toggleSectionCollapse: toggleSectionCollapse,
-        // ✅ SE AÑADE LA NUEVA FUNCIÓN PARA EXPONER EL ESTADO PREMIUM
         arePremiumFeaturesEnabled: () => PALETTE_PREMIUM_FEATURES 
     };
 }
@@ -716,7 +713,6 @@ function renderGradientColors() {
 
     let gradientSection = document.querySelector('[data-section="gradient-colors"]');
 
-    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
     if (PALETTE_PREMIUM_FEATURES) {
         if (!gradientSection) {
             gradientSection = document.createElement('div');
@@ -952,7 +948,6 @@ function setupCollapsibleSectionEvents() {
         }
     });
     
-    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
     if (!PALETTE_PREMIUM_FEATURES) {
         return;
     }
@@ -999,7 +994,6 @@ function setupCollapsibleSections() {
 }
 
 function toggleSectionCollapse(sectionId) {
-    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
     if (!PALETTE_PREMIUM_FEATURES) return;
 
     const sectionContainer = document.querySelector(`.menu-content[data-section="${sectionId}"]`);
@@ -1033,7 +1027,6 @@ function toggleSectionCollapse(sectionId) {
 }
 
 function loadCollapsedSectionsState() {
-    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
     if (!PALETTE_PREMIUM_FEATURES) return;
     try {
         const storedCollapsed = localStorage.getItem(COLOR_SYSTEM_CONFIG.collapsedSectionsKey);
@@ -1049,7 +1042,6 @@ function loadCollapsedSectionsState() {
 }
 
 function saveCollapsedSectionsState() {
-    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
     if (!PALETTE_PREMIUM_FEATURES) return;
     try {
         localStorage.setItem(COLOR_SYSTEM_CONFIG.collapsedSectionsKey, JSON.stringify(Array.from(colorSystemState.collapsedSections)));
@@ -1060,7 +1052,6 @@ function saveCollapsedSectionsState() {
 }
 
 function applyCollapsedSectionsState() {
-    // ✅ LÓGICA MODIFICADA PARA USAR LA NUEVA BANDERA PREMIUM
     if (!PALETTE_PREMIUM_FEATURES) return;
 
     setTimeout(() => {

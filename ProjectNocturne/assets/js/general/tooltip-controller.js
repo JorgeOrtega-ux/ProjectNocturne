@@ -15,7 +15,6 @@ let mobileSidebarInitialized = false;
 let isRefreshingTooltips = false;
 let isSystemInitialized = false;
 
-// New: Reference to the getTranslation function
 let getTranslationFunction = null;
 
 // ========== TOOLTIP MAPS BASED ON DATA-TOOLTIP (FALLBACK) ==========
@@ -656,14 +655,14 @@ window.addEventListener('beforeunload', () => {
 // ========== DEBUG FUNCTIONS ==========
 
 function debugTooltipSystem() {
-    console.group('🐛 Debug del Sistema de Tooltips');
-    console.log('Sistema inicializado:', isSystemInitialized);
-    console.log('Refresh en progreso:', isRefreshingTooltips);
-    console.log('Popper cargado:', popperLoaded);
-    console.log('Sistema habilitado:', enabled);
-    console.log('WeakSet en uso para elementos únicos');
-    console.log('Elemento activo:', activeElement);
-    console.log('Tooltip actual DOM:', tooltip);
+    console.group('🐛 Tooltip System Debug');
+    console.log('System initialized:', isSystemInitialized);
+    console.log('Refresh in progress:', isRefreshingTooltips);
+    console.log('Popper loaded:', popperLoaded);
+    console.log('System enabled:', enabled);
+    console.log('WeakSet in use for unique elements');
+    console.log('Active element:', activeElement);
+    console.log('Current tooltip DOM:', tooltip);
     console.log('TooltipTextMap (current definitions):', tooltipTextMap);
     console.log('Translation Function Available:', !!getTranslationFunction);
     console.groupEnd();

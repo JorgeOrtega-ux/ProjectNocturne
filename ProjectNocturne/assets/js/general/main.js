@@ -1,6 +1,4 @@
-// ========================================
-// MAIN.JS - ACTUALIZADO PARA NUEVAS FUNCIONES DEL MODULE MANAGER
-// ========================================
+// ========== MAIN.JS - UPDATED FOR NEW MODULE MANAGER FUNCTIONS ==========
 
 import {
     initModuleManager,
@@ -18,16 +16,12 @@ import {
     isAnyModuleActive
 } from './module-manager.js';
 
-// Import the new style manager from general-tools.js
 import { initializeTextStyleManager } from '../tools/general-tools.js';
 
-// Import functions from palette-colors.js
-import { getCurrentColor, getColorInfo, isGradientColor } from '../tools/palette-colors.js'; //
+import { getCurrentColor, getColorInfo, isGradientColor } from '../tools/palette-colors.js';
 
 
-// ========================================
-// MÓDULO DEL SIDEBAR MÓVIL
-// ========================================
+// ========== MOBILE SIDEBAR MODULE ==========
 
 function initSidebarMobile() {
     const btn = document.querySelector('[data-module="toggleSidebarMovile"]');
@@ -71,9 +65,7 @@ function initSidebarMobile() {
     window.addEventListener('resize', updateSidebarVisibility);
 }
 
-// ========================================
-// SISTEMA DE SECCIONES DE LA SIDEBAR
-// ========================================
+// ========== SIDEBAR SECTIONS SYSTEM ==========
 
 const activeSectionStates = {
     everything: true,
@@ -192,9 +184,7 @@ function initSidebarSections() {
     activateSection('everything', false);
 }
 
-// ========================================
-// FUNCIONES PÚBLICAS PARA MANEJO EXTERNO DE SECCIONES
-// ========================================
+// ========== PUBLIC FUNCTIONS FOR EXTERNAL SECTION MANAGEMENT ==========
 
 function getActiveSection() {
     const sections = Object.keys(activeSectionStates);
@@ -223,21 +213,15 @@ function switchToSection(sectionName) {
     return false;
 }
 
-// ========================================
-// INICIALIZACIÓN - DELEGADO AL MODULE MANAGER
-// ========================================
+// ========== INITIALIZATION - DELEGATED TO MODULE MANAGER ==========
 
 function initControlCenter() {
-    // Delegado al module manager
 }
 
 function initNewOverlayModules() {
-    // Delegado al module manager
 }
 
-// ========================================
-// FUNCIONES UNIFICADAS DE CONTROL DE MÓDULOS
-// ========================================
+// ========== UNIFIED MODULE CONTROL FUNCTIONS ==========
 
 function closeActiveModule(options = {}) {
     const activeModule = getActiveModule();
@@ -263,9 +247,7 @@ function toggleModuleByName(moduleName) {
     toggleModule(moduleName);
 }
 
-// ========================================
-// FUNCIONES DE UTILIDAD PARA MÓDULOS
-// ========================================
+// ========== MODULE UTILITY FUNCTIONS ==========
 
 function getModuleInfo(moduleName) {
     return {
@@ -286,12 +268,9 @@ function isAnyOverlayActive() {
            isModuleActive('overlayContainer');
 }
 
-// ========================================
-// FUNCIONES ESPECÍFICAS PARA OVERLAYS
-// ========================================
+// ========== OVERLAY SPECIFIC FUNCTIONS ==========
 
 function activateSpecificOverlay(overlayName) {
-    // Mapear nombres de overlay a toggles
     const overlayToToggleMap = {
         'menuAlarm': 'toggleMenuAlarm',
         'menuTimer': 'toggleMenuTimer',
@@ -316,23 +295,18 @@ function closeSpecificOverlay(overlayName) {
 }
 
 function switchOverlay(overlayName) {
-    // Si hay un overlay activo, cambiar al nuevo
     if (isModuleActive('overlayContainer')) {
         const currentOverlay = getCurrentActiveOverlay();
         if (currentOverlay !== overlayName) {
-            // Activar el nuevo overlay (esto cerrará el actual y abrirá el nuevo)
             return activateSpecificOverlay(overlayName);
         }
         return false;
     } else {
-        // No hay overlay activo, activar el solicitado
         return activateSpecificOverlay(overlayName);
     }
 }
 
 function getCurrentActiveOverlay() {
-    // Esta función debería obtener el overlay activo del module manager
-    // Por ahora, verificamos manualmente
     const overlayContainer = document.querySelector('.module-overlay');
     if (overlayContainer && overlayContainer.classList.contains('active')) {
         const activeOverlay = overlayContainer.querySelector('.menu-alarm.active, .menu-timer.active, .menu-worldClock.active, .menu-paletteColors.active');
@@ -350,16 +324,13 @@ function getCurrentActiveOverlay() {
     return null;
 }
 
-// ========================================
-// FUNCIONES MEJORADAS PARA CONTROL CENTER
-// ========================================
+// ========== ENHANCED CONTROL CENTER FUNCTIONS ==========
 
 function activateControlCenterMenu(menuName) {
     if (isControlCenterActive()) {
         showControlCenterMenu(menuName);
         return true;
     } else {
-        // Activar control center primero, luego cambiar menú
         activateModule('controlCenter');
         setTimeout(() => {
             showControlCenterMenu(menuName);
@@ -372,9 +343,7 @@ function switchControlCenterMenu(menuName) {
     return activateControlCenterMenu(menuName);
 }
 
-// ========================================
-// FUNCIONES DE DEBUGGING Y ESTADO
-// ========================================
+// ========== DEBUGGING AND STATE FUNCTIONS ==========
 
 function logAllStates() {
     console.group('🌙 ProjectNocturne - Complete System Status');
@@ -405,9 +374,7 @@ function getSystemStatus() {
     };
 }
 
-// ========================================
-// FUNCIONES WRAPPER PARA COMPATIBILIDAD
-// ========================================
+// ========== WRAPPER FUNCTIONS FOR COMPATIBILITY ==========
 
 function closeControlCenter(options = {}) {
     deactivateModule('controlCenter', options);
@@ -419,7 +386,6 @@ function closeOverlays(options = {}) {
     }
 }
 
-// Función específica para cerrar overlay por nombre
 function closeOverlayByName(overlayName) {
     const currentOverlay = getCurrentActiveOverlay();
     if (currentOverlay === overlayName) {
@@ -428,9 +394,7 @@ function closeOverlayByName(overlayName) {
     return false;
 }
 
-// ========================================
-// FUNCIONES DE EVENTOS PERSONALIZADOS
-// ========================================
+// ========== CUSTOM EVENT FUNCTIONS ==========
 
 function dispatchModuleEvent(eventName, detail = {}) {
     const event = new CustomEvent(eventName, {
@@ -456,9 +420,7 @@ function onOverlayChanged(callback) {
     document.addEventListener('overlayChanged', callback);
 }
 
-// ========================================
-// FUNCIONES DE UTILIDAD AVANZADAS
-// ========================================
+// ========== ADVANCED UTILITY FUNCTIONS ==========
 
 function isModuleBusy() {
     return isModuleCurrentlyChanging();
@@ -487,9 +449,7 @@ function executeWhenModuleReady(callback) {
     waitForModuleReady().then(callback);
 }
 
-// ========================================
-// FUNCIONES DE CONFIGURACIÓN Y PREFERENCIAS
-// ========================================
+// ========== CONFIGURATION AND PREFERENCE FUNCTIONS ==========
 
 function setModulePreference(moduleName, preference, value) {
     try {
@@ -513,20 +473,17 @@ function getModulePreference(moduleName, preference, defaultValue = null) {
     }
 }
 
-// ========================================
-// GETTERS PARA DATOS DE PERSONALIZACIÓN
-// ========================================
+// ========== GETTERS FOR PERSONALIZATION DATA ==========
 
 function getAppliedColor() {
-    // Check if colorTextManager is available on window object
     if (window.colorTextManager && typeof window.colorTextManager.getCurrentColor === 'function' && typeof window.colorTextManager.getColorInfo === 'function') {
         const color = window.colorTextManager.getCurrentColor();
         const info = window.colorTextManager.getColorInfo();
         return {
             color: color,
             colorName: info.activeColorName,
-            isGradient: isGradientColor(color), // Use the imported isGradientColor function
-            isValidForTheme: window.colorTextManager.isValidForTheme(color) // Directly call isValidForTheme from window.colorTextManager
+            isGradient: isGradientColor(color),
+            isValidForTheme: window.colorTextManager.isValidForTheme(color)
         };
     }
     return {
@@ -538,7 +495,6 @@ function getAppliedColor() {
 }
 
 function getAppliedFontScale() {
-    // Check if centralizedFontManager is available on window object
     if (window.centralizedFontManager && typeof window.centralizedFontManager.getCurrentScale === 'function' && typeof window.centralizedFontManager.getCurrentActualSize === 'function') {
         const scale = window.centralizedFontManager.getCurrentScale();
         const pixelSize = window.centralizedFontManager.getCurrentActualSize();
@@ -551,58 +507,45 @@ function getAppliedFontScale() {
 }
 
 function getAppliedTextStyle() {
-    // Check if textStyleState is available (it's internal to general-tools.js via its closure,
-    // but its state is persisted via localStorage and reflected by classes on elements).
-    // The easiest way to check is to directly read localStorage and check for classes.
     return {
         isBold: localStorage.getItem('textStyle_isBold') === 'true',
         isItalic: localStorage.getItem('textStyle_isItalic') === 'true'
     };
 }
 
-// ========================================
-// INITIALIZE TEXT STYLE MANAGER
-// ========================================
+// ========== INITIALIZE TEXT STYLE MANAGER ==========
 document.addEventListener('DOMContentLoaded', initializeTextStyleManager);
 
-// ========================================
-// EXPORTS - FUNCIONES COMPLETAS Y UNIFICADAS
-// ========================================
+// ========== EXPORTS - COMPLETE AND UNIFIED FUNCTIONS ==========
 
 export {
-    // Inicialización
     initSidebarMobile,
     initSidebarSections,
     initControlCenter,
     initNewOverlayModules,
     
-    // Gestión de secciones
     logSectionStates,
     getActiveSection,
     getAllSectionStates,
     switchToSection,
     activateSection,
     
-    // Gestión de módulos (funciones base)
     activateModuleByName as activateModule,
     deactivateModule,
     toggleModuleByName as toggleModule,
     closeActiveModule,
     closeAllModules,
     
-    // Gestión específica de Control Center
     activateControlCenterMenu,
     switchControlCenterMenu,
     showControlCenterMenu,
     
-    // Gestión específica de Overlays
     activateSpecificOverlay,
     closeSpecificOverlay,
     switchOverlay,
     getCurrentActiveOverlay,
     showSpecificOverlay,
     
-    // Estado y control
     isModuleCurrentlyChanging,
     isModuleBusy,
     resetModuleChangeFlag,

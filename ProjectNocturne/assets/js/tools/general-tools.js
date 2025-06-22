@@ -1,6 +1,4 @@
-/* ============================================ */
-/* SERVICE: CATEGORY SLIDER DRAG & SCROLL */
-/* ============================================ */
+// ========== SERVICE: CATEGORY SLIDER DRAG & SCROLL ==========
 
 function initializeCategorySliderService() {
     // ========== CONFIGURATION ==========
@@ -60,13 +58,8 @@ function initializeCategorySliderService() {
         const scrollWidth = container.scrollWidth;
         const clientWidth = container.clientWidth;
 
-        // SOLUCIÓN: Usamos Math.round() para normalizar el valor de scroll y evitar
-        // errores de cálculo con decimales (sub-píxeles), que son la causa
-        // principal de que los botones no se oculten correctamente.
         const roundedScrollLeft = Math.round(scrollLeft);
 
-        // --- Lógica del botón izquierdo ---
-        // Se muestra si el scroll es mayor que 0
         if (roundedScrollLeft > 0) {
             if (!buttons.left) {
                 buttons.left = createScrollButton('left', container, wrapper);
@@ -77,9 +70,6 @@ function initializeCategorySliderService() {
             buttons.left = null;
         }
         
-        // --- Lógica del botón derecho ---
-        // Se muestra si la suma del scroll actual y el ancho visible es menor
-        // que el ancho total del contenido.
         if (roundedScrollLeft + clientWidth < scrollWidth) {
             if (!buttons.right) {
                 buttons.right = createScrollButton('right', container, wrapper);
@@ -182,6 +172,7 @@ function initializeCategorySliderService() {
     window.addEventListener('load', handleWindowLoad);
 }
 
+// ========== CENTRALIZED FONT MANAGER ==========
 function initializeCentralizedFontManager() {
     // ========== GLOBAL VARIABLES ==========
     const sections = ['alarm', 'timer', 'stopwatch', 'worldClock'];

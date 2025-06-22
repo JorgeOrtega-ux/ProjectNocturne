@@ -328,23 +328,16 @@ function initApp() {
     try {
         applicationState.isInitializing = true;
 
-        // Step 1: Initialize Module Manager (handles theme/language core)
         initModuleManager()
             .then(() => {
-                // Step 2: Set translation function for Module Manager (allows it to fetch translations)
                 setModuleManagerTranslationFunction(getTranslationFunction);
-                // Step 3: Initialize Translation System
                 return initTranslationSystem();
             })
             .then(() => {
-                // Step 4: Pass tooltip text map update function to Translation System
-                // so that translations-controller can inform tooltip-controller when translations change.
                 if (typeof window.setTooltipTextMapUpdateFunction === 'function') {
                     window.setTooltipTextMapUpdateFunction(updateTooltipTextMap);
                 }
-                // New: Pass the getTranslationFunction to the tooltip-controller
                 setTooltipTranslationGetter(getTranslationFunction);
-                // Step 5: Initialize Tooltip System
                 return initializeTooltipSystem();
             })
             .then(() => {

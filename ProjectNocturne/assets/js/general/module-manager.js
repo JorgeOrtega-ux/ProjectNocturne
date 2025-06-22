@@ -1,10 +1,6 @@
-// ========================================
-// MODULE-MANAGER.JS - CON CANCELACIÓN DE PROCESOS AL CERRAR MENÚS
-// ========================================
+// ========== MODULE-MANAGER.JS - WITH PROCESS CANCELLATION ON MENU CLOSE ==========
 
-// ========================================
-// IMPORTS Y DEPENDENCIAS
-// ========================================
+// ========== IMPORTS AND DEPENDENCIES ==========
 
 import {
     initThemeManager,
@@ -34,9 +30,7 @@ import {
 
 import { clearSearchColors } from '../tools/color-search-system.js';
 
-// ========================================
-// CONSTANTES Y CONFIGURACIÓN
-// ========================================
+// ========== CONSTANTS AND CONFIGURATION ==========
 
 const TIMING_CONFIG = {
     MIN_INTERVAL_BETWEEN_OPERATIONS: 500,
@@ -90,9 +84,7 @@ const TOGGLE_TO_MODULE_MAP = {
     'togglePaletteColors': 'overlayContainer'
 };
 
-// ========================================
-// ESTADO CENTRALIZADO
-// ========================================
+// ========== CENTRALIZED STATE ==========
 
 const moduleState = {
     modules: {
@@ -118,9 +110,7 @@ const moduleState = {
     lastLabelUpdate: 0
 };
 
-// ========================================
-// REFERENCIAS DOM CACHEADAS
-// ========================================
+// ========== CACHED DOM REFERENCES ==========
 
 const domCache = {
     controlCenter: {
@@ -133,15 +123,11 @@ const domCache = {
     overlays: {}
 };
 
-// ========================================
-// REFERENCIAS EXTERNAS
-// ========================================
+// ========== EXTERNAL REFERENCES ==========
 
 let getTranslation = null;
 
-// ========================================
-// ✅ FUNCIÓN CENTRALIZADA DE CANCELACIÓN COMPLETA
-// ========================================
+// ========== CENTRALIZED CANCELLATION FUNCTION ==========
 
 function cancelAllActiveProcesses(reason = 'module-close') {
     let processesCancelled = false;
@@ -160,7 +146,6 @@ function cancelAllActiveProcesses(reason = 'module-close') {
         processesCancelled = true;
     }
 
-    // ✅ NUEVO: Limpiar la búsqueda de colores
     if (typeof clearSearchColors === 'function') {
         console.log(`🚫 Clearing color search (${reason})`);
         clearSearchColors();
@@ -169,9 +154,7 @@ function cancelAllActiveProcesses(reason = 'module-close') {
     return processesCancelled;
 }
 
-// ========================================
-// ✅ FUNCIONES DE LIMPIEZA DIRECTA (PRIVADAS)
-// ========================================
+// ========== PRIVATE CLEANUP FUNCTIONS ==========
 
 function cleanThemeChangeStates() {
     resetThemeStates();
@@ -219,9 +202,7 @@ function cleanLanguageChangeStates() {
     });
 }
 
-// ========================================
-// ✅ FUNCIONES SIMPLIFICADAS (AHORA USAN LA CENTRALIZADA)
-// ========================================
+// ========== SIMPLIFIED FUNCTIONS ==========
 
 function cancelActiveProcessesOnModuleClose(moduleName) {
     return cancelAllActiveProcesses('module-close');
@@ -231,9 +212,7 @@ function forceCleanAllProcesses() {
     return cancelAllActiveProcesses('force-clean');
 }
 
-// ========================================
-// INICIALIZACIÓN PRINCIPAL
-// ========================================
+// ========== MAIN INITIALIZATION ==========
 
 function initModuleManager() {
     return new Promise((resolve, reject) => {
@@ -280,9 +259,7 @@ function setupCallbacks() {
     });
 }
 
-// ========================================
-// INICIALIZACIÓN DE SUBSISTEMAS
-// ========================================
+// ========== SUBSYSTEM INITIALIZATION ==========
 
 function initializeDOMReferences() {
     return new Promise(resolve => {
@@ -308,9 +285,7 @@ function initializeEventListeners() {
     });
 }
 
-// ========================================
-// FUNCIONES PRINCIPALES ACTUALIZADAS
-// ========================================
+// ========== UPDATED CORE FUNCTIONS ==========
 
 function activateModule(moduleName) {
     const normalizedName = normalizeModuleName(moduleName);
@@ -381,9 +356,7 @@ function deactivateAllModules() {
     });
 }
 
-// ========================================
-// FUNCIONES ESPECÍFICAS POR MÓDULO
-// ========================================
+// ========== MODULE SPECIFIC FUNCTIONS ==========
 
 function activateControlCenter() {
     const controlCenterModule = domCache.controlCenter.module;
@@ -479,9 +452,7 @@ function performModuleDeactivation(moduleName) {
     }
 }
 
-// ========================================
-// GESTIÓN DE MENÚS Y OVERLAYS
-// ========================================
+// ========== MENU AND OVERLAY MANAGEMENT ==========
 
 function showControlCenterMenu(menuName) {
     const controlCenter = domCache.controlCenter.module;
@@ -531,9 +502,7 @@ function hideAllOverlays() {
     });
 }
 
-// ========================================
-// FUNCIONES AUXILIARES
-// ========================================
+// ========== HELPER FUNCTIONS ==========
 
 function normalizeModuleName(moduleName) {
     if (TOGGLE_TO_MODULE_MAP[moduleName]) {
@@ -579,9 +548,7 @@ function resetMobileMenuStyles(element) {
     }, 50);
 }
 
-// ========================================
-// VERIFICACIÓN DE ESTADOS
-// ========================================
+// ========== STATE VERIFICATION ==========
 
 function hasStateInconsistencies() {
     const inconsistencies = [];
@@ -709,9 +676,7 @@ function getModuleElementByName(moduleName) {
     }
 }
 
-// ========================================
-// APLICACIÓN DE ESTADOS INICIALES
-// ========================================
+// ========== INITIAL STATE APPLICATION ==========
 
 function applyInitialStates() {
     const now = Date.now();
@@ -741,9 +706,7 @@ function applyInitialStates() {
     }
 }
 
-// ========================================
-// ACTUALIZACIÓN DE ETIQUETAS
-// ========================================
+// ========== LABEL UPDATES ==========
 
 function updateMenuLabels() {
     const now = Date.now();
@@ -772,9 +735,7 @@ function updateMenuLabels() {
     }
 }
 
-// ========================================
-// CONFIGURACIÓN DE EVENT LISTENERS
-// ========================================
+// ========== EVENT LISTENER SETUP ==========
 
 function setupModuleEvents() {
     if (domCache.controlCenter.toggle) {
@@ -908,9 +869,7 @@ function setupVisibilityAndMenuEvents() {
     });
 }
 
-// ========================================
-// FUNCIONES DE UTILIDAD
-// ========================================
+// ========== UTILITY FUNCTIONS ==========
 
 function getActiveModule() {
     return Object.keys(moduleState.modules).find(name => moduleState.modules[name].active) || null;
@@ -925,9 +884,7 @@ function isAnyModuleActive() {
     return Object.values(moduleState.modules).some(module => module.active);
 }
 
-// ========================================
-// FUNCIONES DE CONTROL Y ESTADO
-// ========================================
+// ========== CONTROL AND STATE FUNCTIONS ==========
 
 function forceUpdateStates() {
     if (!moduleState.isSystemReady || !moduleState.initializationComplete) {
@@ -967,9 +924,7 @@ function resetModuleChangeFlag() {
     console.log('🔧 Module change flag reset manually');
 }
 
-// ========================================
-// FUNCIÓN PARA CONECTAR CON SISTEMA DE TRADUCCIONES
-// ========================================
+// ========== CONNECTING WITH TRANSLATION SYSTEM ==========
 
 function setTranslationFunction(translationFn) {
     getTranslation = translationFn;
@@ -984,9 +939,7 @@ function setTranslationFunction(translationFn) {
     }
 }
 
-// ========================================
-// LOGGING Y DEBUG
-// ========================================
+// ========== LOGGING AND DEBUGGING ==========
 
 function logModuleStates() {
     console.groupCollapsed('📊 Module States');
@@ -1061,9 +1014,7 @@ function debugStateConsistency() {
     console.groupEnd();
 }
 
-// ========================================
-// GETTERS PÚBLICOS
-// ========================================
+// ========== PUBLIC GETTERS ==========
 
 function isReady() {
     return moduleState.isSystemReady && moduleState.initializationComplete;
@@ -1077,9 +1028,7 @@ function getModuleStates() {
     return states;
 }
 
-// ========================================
-// ✅ FUNCIONES PÚBLICAS PARA CANCELACIÓN (SIMPLIFICADAS)
-// ========================================
+// ========== PUBLIC CANCELLATION FUNCTIONS ==========
 
 function cancelActiveProcesses(reason = 'manual') {
     return cancelAllActiveProcesses(reason);
@@ -1089,9 +1038,7 @@ function isAnyProcessActive() {
     return isThemeChanging() || isLanguageChanging();
 }
 
-// ========================================
-// ✅ FUNCIÓN DE ESCAPE GLOBAL (NUEVA)
-// ========================================
+// ========== GLOBAL ESCAPE KEY HANDLER ==========
 
 function handleEscapeKey() {
     const processesCancelled = cancelAllActiveProcesses('escape-key');
@@ -1104,9 +1051,7 @@ function handleEscapeKey() {
     }
 }
 
-// ========================================
-// EXPORTS
-// ========================================
+// ========== EXPORTS ==========
 
 export {
     initModuleManager,

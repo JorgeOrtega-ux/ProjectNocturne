@@ -1,7 +1,7 @@
-// ========== IMPORTS Y DEPENDENCIAS ==========
+// ========== IMPORTS AND DEPENDENCIES ==========
 import { deactivateModule, isModuleCurrentlyChanging } from './main.js';
 
-// ========== VARIABLES GLOBALES ==========
+// ========== GLOBAL VARIABLES ==========
 let isDragging = false;
 let startY = 0;
 let currentY = 0;
@@ -10,12 +10,11 @@ const dragThreshold = 0.5;
 let isEnabled = false;
 let enableOpacityOnDrag = false;
 
-// Referencias para módulos
 let activeModule = null;
 let activeMenu = null;
 let dragHandleElement = null;
 
-// ========== FUNCIONES DE INICIALIZACIÓN ==========
+// ========== INITIALIZATION FUNCTIONS ==========
 function initMobileDragController() {
     if (window.innerWidth > 468) {
         return;
@@ -33,7 +32,7 @@ function initMobileDragController() {
     console.log('📱 Mobile drag controller initialized for multiple modules');
 }
 
-// ========== CONFIGURACIÓN DE EVENT LISTENERS ==========
+// ========== EVENT LISTENER SETUP ==========
 function setupDragListeners() {
     document.addEventListener('touchstart', handleDragStart, { passive: false });
     document.addEventListener('touchmove', handleDragMove, { passive: false });
@@ -96,7 +95,7 @@ function setupResizeListener() {
     });
 }
 
-// ========== FUNCIONES DE DRAG ==========
+// ========== DRAG FUNCTIONS ==========
 function handleDragStart(e) {
     if (!isEnabled) return;
 
@@ -220,7 +219,7 @@ function returnToOriginalPosition() {
     menuElement.addEventListener('transitionend', handler, { once: true });
 }
 
-// ========== FUNCIONES AUXILIARES ==========
+// ========== HELPER FUNCTIONS ==========
 function getModuleFromDragHandle(dragHandle) {
     const controlCenterModule = dragHandle.closest('.module-control-center');
     if (controlCenterModule) {
@@ -259,7 +258,7 @@ function getModuleNameFromElement(moduleElement) {
     return null;
 }
 
-// ========== FUNCIONES DE HABILITACIÓN/DESHABILITACIÓN ==========
+// ========== ENABLE/DISABLE FUNCTIONS ==========
 function enableDrag() {
     if (window.innerWidth <= 468) {
         isEnabled = true;
@@ -301,7 +300,7 @@ function resetAllMenuStyles() {
     });
 }
 
-// ========== FUNCIONES PÚBLICAS ==========
+// ========== PUBLIC FUNCTIONS ==========
 function isDragEnabled() {
     return isEnabled;
 }
@@ -344,7 +343,7 @@ function forceCloseDrag() {
     }
 }
 
-// ========== FUNCIONES DE ACTUALIZACIÓN DE ELEMENTOS ==========
+// ========== ELEMENT REFERENCE UPDATE FUNCTIONS ==========
 function updateModuleReferences() {
     console.log('📱 Module references updated for drag controller');
 }

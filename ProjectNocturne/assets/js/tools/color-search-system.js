@@ -8,7 +8,6 @@ const COLOR_SEARCH_CONFIG = {
     searchColorsWrapper: '[data-colors-wrapper="search"]',
     maxResultsPerSection: 18,
     debounceDelay: 300
-    // ✅ LA BANDERA LOCAL SE HA ELIMINADO
 };
 
 // ========== NEW MULTILINGUAL COLOR DATABASE ==========
@@ -252,7 +251,6 @@ function initColorSearch() {
     }
 
     setupSearchInput();
-    // La función setupClickOutsideHandler() ha sido eliminada.
     searchState.isInitialized = true;
 }
 
@@ -276,8 +274,6 @@ function updateSearchPlaceholder() {
         searchInput.placeholder = getSearchPlaceholder();
     }
 }
-
-// La función setupClickOutsideHandler() ha sido eliminada.
 
 function handleSearchInput(e) {
     const query = e.target.value.trim();
@@ -307,12 +303,9 @@ function handleSearchFocus(e) {
 }
 
 function handleSearchBlur(e) {
-    // Esta función podría eliminarse o simplificarse si ya no se necesita
-    // la lógica de "click outside". Por ahora la mantenemos para la lógica del foco.
     setTimeout(() => {
         const searchInput = document.querySelector(COLOR_SEARCH_CONFIG.searchInput);
         if (!searchInput || !searchInput.value.trim()) {
-           // No hacer nada al perder el foco si no hay un clic fuera explícito
         }
     }, 150);
 }
@@ -485,7 +478,6 @@ function getBaseColorFromQuery(query) {
         const color = chroma(lowerQuery);
         return { hex: color.hex(), key: null };
     } catch (error) {
-        // Not a valid CSS color name
     }
 
     return null;
@@ -1105,11 +1097,14 @@ window.colorSearchManager = {
     isValidForTheme: isValidForTheme,
     getCurrentTheme: getCurrentTheme,
     updatePlaceholder: updateSearchPlaceholder,
+
     showSearchSectionWrapper: showSearchSectionWrapper,
     hideSearchSectionWrapper: hideSearchSectionWrapper
 };
 
 autoInit();
+
+// ========== EXPORTS ==========
 
 export {
     initColorSearch,

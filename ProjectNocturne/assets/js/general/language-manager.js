@@ -1,10 +1,6 @@
-// ========================================
-// LANGUAGE-MANAGER.JS - CON CANCELACIÓN DE PROCESOS
-// ========================================
+// ========== LANGUAGE-MANAGER.JS - WITH PROCESS CANCELLATION ==========
 
-// ========================================
-// CONSTANTES Y CONFIGURACIÓN
-// ========================================
+// ========== CONSTANTS AND CONFIGURATION ==========
 
 const SUPPORTED_LANGUAGES = ['en-us', 'es-mx', 'fr-fr'];
 
@@ -20,31 +16,24 @@ const TIMING_CONFIG = {
     MIN_INTERVAL_BETWEEN_OPERATIONS: 500
 };
 
-// ========================================
-// ESTADO DEL SISTEMA DE IDIOMAS
-// ========================================
+// ========== LANGUAGE SYSTEM STATE ==========
 
 const languageState = {
     current: 'en-us',
     isChanging: false,
     isSystemReady: false,
     lastStateApplication: 0,
-    // ✅ NUEVO: Control de cancelación
     changeTimeout: null,
     pendingLanguage: null,
     isCancellable: false
 };
 
-// ========================================
-// REFERENCIAS EXTERNAS
-// ========================================
+// ========== EXTERNAL REFERENCES ==========
 
 let getTranslation = null;
 let onLanguageChangeCallback = null;
 
-// ========================================
-// INICIALIZACIÓN DEL SISTEMA DE IDIOMAS
-// ========================================
+// ========== LANGUAGE SYSTEM INITIALIZATION ==========
 
 function initLanguageManager() {
     return new Promise((resolve, reject) => {
@@ -55,7 +44,6 @@ function initLanguageManager() {
                 languageState.isSystemReady = true;
                 resolve();
             } else {
-                // Detectar idioma del navegador
                 detectBrowserLanguage()
                     .then(detectedLanguage => {
                         languageState.current = detectedLanguage;
@@ -77,9 +65,7 @@ function initLanguageManager() {
     });
 }
 
-// ========================================
-// ✅ NUEVA FUNCIÓN: CANCELAR CAMBIO DE IDIOMA
-// ========================================
+// ========== CANCEL LANGUAGE CHANGE FUNCTION ==========
 
 function cancelLanguageChange() {
     if (!languageState.isChanging) {
@@ -88,17 +74,14 @@ function cancelLanguageChange() {
 
     console.log('🚫 Cancelling language change process');
 
-    // Limpiar timeout si existe
     if (languageState.changeTimeout) {
         clearTimeout(languageState.changeTimeout);
         languageState.changeTimeout = null;
     }
 
-    // Revertir al idioma anterior
     const previousLanguage = languageState.current;
     revertLanguageChange(previousLanguage);
 
-    // Resetear estados
     languageState.isChanging = false;
     languageState.pendingLanguage = null;
     languageState.isCancellable = false;
@@ -107,16 +90,13 @@ function cancelLanguageChange() {
     return true;
 }
 
-// ========================================
-// DETECCIÓN DE IDIOMA DEL NAVEGADOR
-// ========================================
+// ========== BROWSER LANGUAGE DETECTION ==========
 
 function detectBrowserLanguage() {
     return new Promise(resolve => {
         try {
             const browserLang = navigator.language || navigator.userLanguage || 'en-US';
             
-            // Intentar usar el detector PHP si está disponible
             fetch('config/language-detector.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -133,7 +113,6 @@ function detectBrowserLanguage() {
                 resolve(SUPPORTED_LANGUAGES.includes(detected) ? detected : 'en-us');
             })
             .catch(() => {
-                // Fallback: detectar manualmente
                 const manualDetection = detectLanguageManually(browserLang);
                 resolve(manualDetection);
             });
@@ -155,9 +134,7 @@ function detectLanguageManually(browserLang) {
     }
 }
 
-// ========================================
-// GESTIÓN DE IDIOMAS ACTUALIZADA
-// ========================================
+// ========== UPDATED LANGUAGE MANAGEMENT ==========
 
 function setLanguage(language) {
     if (languageState.isChanging || language === languageState.current) {
@@ -167,26 +144,23 @@ function setLanguage(language) {
     const previousLanguage = languageState.current;
     languageState.isChanging = true;
     languageState.pendingLanguage = language;
-    languageState.isCancellable = true; // ✅ NUEVO: Marcar como cancelable
+    languageState.isCancellable = true;
 
     console.log('🌐 Setting language:', language);
     setupLanguageLoadingUI(language, previousLanguage);
 
     return performLanguageChange(language)
         .then(() => {
-            // Solo aplicar si no fue cancelado
             if (languageState.isChanging && languageState.pendingLanguage === language) {
                 if (SUPPORTED_LANGUAGES.includes(language)) {
                     languageState.current = language;
                     localStorage.setItem('app-language', language);
                     completeLanguageChange(language);
                     
-                    // Notificar al callback si existe
                     if (onLanguageChangeCallback && typeof onLanguageChangeCallback === 'function') {
                         onLanguageChangeCallback();
                     }
 
-                    // Disparar evento de cambio de idioma
                     const event = new CustomEvent('languageChanged', {
                         detail: { language: language, previousLanguage: previousLanguage }
                     });
@@ -219,9 +193,7 @@ function setLanguage(language) {
 
 function performLanguageChange(language) {
     return new Promise((resolve, reject) => {
-        // ✅ NUEVO: Guardar referencia del timeout para poder cancelarlo
         languageState.changeTimeout = setTimeout(() => {
-            // Verificar si el cambio no fue cancelado
             if (languageState.isChanging && languageState.pendingLanguage === language) {
                 const isValid = validateLanguageChange(language);
                 if (!isValid) {
@@ -250,9 +222,7 @@ function validateLanguageChange(language) {
     return true;
 }
 
-// ========================================
-// GESTIÓN DE UI DE CARGA
-// ========================================
+// ========== LOADING UI MANAGEMENT ==========
 
 function setupLanguageLoadingUI(newLanguage, previousLanguage) {
     const languageLinks = document.querySelectorAll('.menu-link[data-language]');
@@ -297,9 +267,7 @@ function revertLanguageChange(previousLanguage) {
     });
 }
 
-// ========================================
-// UTILIDADES DE SPINNER
-// ========================================
+// ========== SPINNER UTILITIES ==========
 
 function addSpinnerToLink(link) {
     removeSpinnerFromLink(link);
@@ -316,9 +284,7 @@ function removeSpinnerFromLink(link) {
     }
 }
 
-// ========================================
-// APLICACIÓN DE ESTADOS INICIALES
-// ========================================
+// ========== INITIAL STATE APPLICATION ==========
 
 function applyLanguageStates() {
     const now = Date.now();
@@ -350,9 +316,7 @@ function applyLanguageStates() {
     }
 }
 
-// ========================================
-// ACTUALIZACIÓN DE ETIQUETAS
-// ========================================
+// ========== LABEL UPDATES ==========
 
 function updateLanguageLabel() {
     try {
@@ -360,7 +324,6 @@ function updateLanguageLabel() {
         if (!languageLink) return;
 
         if (getTranslation) {
-            // Usar sistema de traducciones
             const languageText = getTranslation('language', 'menu');
             const currentLanguageTranslationKey = getLanguageTranslationKey(languageState.current);
             const currentLanguageText = getTranslation(currentLanguageTranslationKey, 'menu');
@@ -371,7 +334,6 @@ function updateLanguageLabel() {
                 console.log('🌐 Updated language label:', newText);
             }
         } else {
-            // Fallback sin traducciones
             const currentLanguageDisplay = LANGUAGE_DISPLAY_NAMES[languageState.current] || languageState.current;
             const newText = 'Language: ' + currentLanguageDisplay;
             if (languageLink.textContent !== newText) {
@@ -392,9 +354,7 @@ function getLanguageTranslationKey(language) {
     return languageMap[language] || 'english_us';
 }
 
-// ========================================
-// CONFIGURACIÓN DE EVENT LISTENERS
-// ========================================
+// ========== EVENT LISTENER SETUP ==========
 
 function setupLanguageEventListeners() {
     document.addEventListener('click', (e) => {
@@ -409,9 +369,7 @@ function setupLanguageEventListeners() {
     });
 }
 
-// ========================================
-// LIMPIAR ESTADOS DE CARGA
-// ========================================
+// ========== CLEAN LOADING STATES ==========
 
 function cleanLanguageLoadingStates() {
     const languageLinks = document.querySelectorAll('.menu-link[data-language]');
@@ -425,9 +383,7 @@ function cleanLanguageLoadingStates() {
     }, 50);
 }
 
-// ========================================
-// ✅ FUNCIÓN PARA RESETEAR ESTADOS INTERNOS (LLAMADA POR MODULE-MANAGER)
-// ========================================
+// ========== FUNCTION TO RESET INTERNAL STATES (CALLED BY MODULE-MANAGER) ==========
 
 function resetLanguageStates() {
     if (languageState.changeTimeout) {
@@ -440,9 +396,7 @@ function resetLanguageStates() {
     languageState.isCancellable = false;
 }
 
-// ========================================
-// FUNCIONES DE CONFIGURACIÓN
-// ========================================
+// ========== CONFIGURATION FUNCTIONS ==========
 
 function setTranslationFunction(translationFn) {
     getTranslation = translationFn;
@@ -458,9 +412,7 @@ function setLanguageChangeCallback(callback) {
     onLanguageChangeCallback = callback;
 }
 
-// ========================================
-// GETTERS PÚBLICOS
-// ========================================
+// ========== PUBLIC GETTERS ==========
 
 function getCurrentLanguage() {
     return languageState.current;
@@ -488,15 +440,12 @@ function getLanguageState() {
         isChanging: languageState.isChanging,
         isSystemReady: languageState.isSystemReady,
         supportedLanguages: SUPPORTED_LANGUAGES,
-        // ✅ NUEVO: Estados de cancelación
         isCancellable: languageState.isCancellable,
         pendingLanguage: languageState.pendingLanguage
     };
 }
 
-// ========================================
-// FUNCIONES DE DEBUG
-// ========================================
+// ========== DEBUG FUNCTIONS ==========
 
 function debugLanguageManager() {
     console.group('🐛 Language Manager Debug');
@@ -515,9 +464,7 @@ function debugLanguageManager() {
     console.groupEnd();
 }
 
-// ========================================
-// EXPORTS (SIMPLIFICADOS Y LIMPIOS)
-// ========================================
+// ========== EXPORTS ==========
 
 export {
     initLanguageManager,
@@ -537,7 +484,6 @@ export {
     setTranslationFunction,
     setLanguageChangeCallback,
     
-    // ✅ FUNCIÓN PARA RESETEAR ESTADOS (LLAMADA POR MODULE-MANAGER)
     resetLanguageStates,
     
     detectBrowserLanguage,

@@ -1,10 +1,6 @@
-// ========================================
-// THEME-MANAGER.JS - CON CANCELACIÓN DE PROCESOS
-// ========================================
+// ========== THEME-MANAGER.JS - WITH PROCESS CANCELLATION ==========
 
-// ========================================
-// CONSTANTES Y CONFIGURACIÓN
-// ========================================
+// ========== CONSTANTS AND CONFIGURATION ==========
 
 const SUPPORTED_THEMES = ['system', 'dark', 'light'];
 
@@ -20,31 +16,24 @@ const TIMING_CONFIG = {
     MIN_INTERVAL_BETWEEN_OPERATIONS: 500
 };
 
-// ========================================
-// ESTADO DEL SISTEMA DE TEMAS
-// ========================================
+// ========== THEME SYSTEM STATE ==========
 
 const themeState = {
     current: 'system',
     isChanging: false,
     isSystemReady: false,
     lastStateApplication: 0,
-    // ✅ NUEVO: Control de cancelación
     changeTimeout: null,
     pendingTheme: null,
     isCancellable: false
 };
 
-// ========================================
-// REFERENCIAS EXTERNAS
-// ========================================
+// ========== EXTERNAL REFERENCES ==========
 
 let getTranslation = null;
 let onThemeChangeCallback = null;
 
-// ========================================
-// INICIALIZACIÓN DEL SISTEMA DE TEMAS
-// ========================================
+// ========== THEME SYSTEM INITIALIZATION ==========
 
 function initThemeManager() {
     return new Promise((resolve, reject) => {
@@ -69,9 +58,7 @@ function initThemeManager() {
     });
 }
 
-// ========================================
-// ✅ NUEVA FUNCIÓN: CANCELAR CAMBIO DE TEMA
-// ========================================
+// ========== CANCEL THEME CHANGE FUNCTION ==========
 
 function cancelThemeChange() {
     if (!themeState.isChanging) {
@@ -80,17 +67,14 @@ function cancelThemeChange() {
 
     console.log('🚫 Cancelling theme change process');
 
-    // Limpiar timeout si existe
     if (themeState.changeTimeout) {
         clearTimeout(themeState.changeTimeout);
         themeState.changeTimeout = null;
     }
 
-    // Revertir al tema anterior
     const previousTheme = themeState.current;
     revertThemeChange(previousTheme);
 
-    // Resetear estados
     themeState.isChanging = false;
     themeState.pendingTheme = null;
     themeState.isCancellable = false;
@@ -99,9 +83,7 @@ function cancelThemeChange() {
     return true;
 }
 
-// ========================================
-// GESTIÓN DE TEMAS ACTUALIZADA
-// ========================================
+// ========== UPDATED THEME MANAGEMENT ==========
 
 function applyTheme(theme) {
     if (themeState.isChanging || theme === themeState.current) {
@@ -111,26 +93,23 @@ function applyTheme(theme) {
     const previousTheme = themeState.current;
     themeState.isChanging = true;
     themeState.pendingTheme = theme;
-    themeState.isCancellable = true; // ✅ NUEVO: Marcar como cancelable
+    themeState.isCancellable = true;
 
     console.log('🎨 Applying theme:', theme);
     setupThemeLoadingUI(theme, previousTheme);
 
     return performThemeChange(theme)
         .then(() => {
-            // Solo aplicar si no fue cancelado
             if (themeState.isChanging && themeState.pendingTheme === theme) {
                 applyThemeClass(theme);
                 themeState.current = theme;
                 localStorage.setItem('app-theme', theme);
                 completeThemeChange(theme);
                 
-                // Notificar al callback si existe
                 if (onThemeChangeCallback && typeof onThemeChangeCallback === 'function') {
                     onThemeChangeCallback();
                 }
                 
-                // Disparar evento de cambio de tema
                 const event = new CustomEvent('themeChanged', {
                     detail: { theme: theme, previousTheme: previousTheme }
                 });
@@ -158,9 +137,7 @@ function applyTheme(theme) {
 
 function performThemeChange(theme) {
     return new Promise((resolve, reject) => {
-        // ✅ NUEVO: Guardar referencia del timeout para poder cancelarlo
         themeState.changeTimeout = setTimeout(() => {
-            // Verificar si el cambio no fue cancelado
             if (themeState.isChanging && themeState.pendingTheme === theme) {
                 const isValid = validateThemeChange(theme);
                 if (!isValid) {
@@ -210,9 +187,7 @@ function validateThemeChange(theme) {
     return true;
 }
 
-// ========================================
-// GESTIÓN DE UI DE CARGA
-// ========================================
+// ========== LOADING UI MANAGEMENT ==========
 
 function setupThemeLoadingUI(newTheme, previousTheme) {
     const themeLinks = document.querySelectorAll('.menu-link[data-theme]');
@@ -257,9 +232,7 @@ function revertThemeChange(previousTheme) {
     });
 }
 
-// ========================================
-// UTILIDADES DE SPINNER
-// ========================================
+// ========== SPINNER UTILITIES ==========
 
 function addSpinnerToLink(link) {
     removeSpinnerFromLink(link);
@@ -276,9 +249,7 @@ function removeSpinnerFromLink(link) {
     }
 }
 
-// ========================================
-// APLICACIÓN DE ESTADOS INICIALES
-// ========================================
+// ========== INITIAL STATE APPLICATION ==========
 
 function applyThemeStates() {
     const now = Date.now();
@@ -310,9 +281,7 @@ function applyThemeStates() {
     }
 }
 
-// ========================================
-// ACTUALIZACIÓN DE ETIQUETAS
-// ========================================
+// ========== LABEL UPDATES ==========
 
 function updateThemeLabel() {
     try {
@@ -320,7 +289,6 @@ function updateThemeLabel() {
         if (!appearanceLink) return;
 
         if (getTranslation) {
-            // Usar sistema de traducciones
             const appearanceText = getTranslation('appearance', 'menu');
             const currentThemeTranslationKey = getThemeTranslationKey(themeState.current);
             const currentThemeText = getTranslation(currentThemeTranslationKey, 'menu');
@@ -331,7 +299,6 @@ function updateThemeLabel() {
                 console.log('🎨 Updated appearance label:', newText);
             }
         } else {
-            // Fallback sin traducciones
             const currentThemeDisplay = THEME_DISPLAY_NAMES[themeState.current] || themeState.current;
             const newText = 'Appearance: ' + currentThemeDisplay;
             if (appearanceLink.textContent !== newText) {
@@ -352,9 +319,7 @@ function getThemeTranslationKey(theme) {
     return themeMap[theme] || 'sync_with_system';
 }
 
-// ========================================
-// LISTENER PARA TEMA DEL SISTEMA
-// ========================================
+// ========== SYSTEM THEME LISTENER ==========
 
 function setupSystemThemeListener() {
     if (window.matchMedia) {
@@ -363,7 +328,6 @@ function setupSystemThemeListener() {
                 console.log('🌓 System theme preference changed, updating...');
                 applyThemeClass('system');
                 
-                // Notificar cambio para actualizar etiquetas
                 setTimeout(() => {
                     if (onThemeChangeCallback && typeof onThemeChangeCallback === 'function') {
                         onThemeChangeCallback();
@@ -374,9 +338,7 @@ function setupSystemThemeListener() {
     }
 }
 
-// ========================================
-// CONFIGURACIÓN DE EVENT LISTENERS
-// ========================================
+// ========== EVENT LISTENER SETUP ==========
 
 function setupThemeEventListeners() {
     document.addEventListener('click', (e) => {
@@ -391,9 +353,7 @@ function setupThemeEventListeners() {
     });
 }
 
-// ========================================
-// LIMPIAR ESTADOS DE CARGA
-// ========================================
+// ========== CLEAN LOADING STATES ==========
 
 function cleanThemeLoadingStates() {
     const themeLinks = document.querySelectorAll('.menu-link[data-theme]');
@@ -407,9 +367,7 @@ function cleanThemeLoadingStates() {
     }, 50);
 }
 
-// ========================================
-// ✅ FUNCIÓN PARA RESETEAR ESTADOS INTERNOS (LLAMADA POR MODULE-MANAGER)
-// ========================================
+// ========== FUNCTION TO RESET INTERNAL STATES (CALLED BY MODULE-MANAGER) ==========
 
 function resetThemeStates() {
     if (themeState.changeTimeout) {
@@ -422,9 +380,7 @@ function resetThemeStates() {
     themeState.isCancellable = false;
 }
 
-// ========================================
-// FUNCIONES DE CONFIGURACIÓN
-// ========================================
+// ========== CONFIGURATION FUNCTIONS ==========
 
 function setTranslationFunction(translationFn) {
     getTranslation = translationFn;
@@ -440,9 +396,7 @@ function setThemeChangeCallback(callback) {
     onThemeChangeCallback = callback;
 }
 
-// ========================================
-// GETTERS PÚBLICOS
-// ========================================
+// ========== PUBLIC GETTERS ==========
 
 function getCurrentTheme() {
     return themeState.current;
@@ -470,15 +424,12 @@ function getThemeState() {
         isChanging: themeState.isChanging,
         isSystemReady: themeState.isSystemReady,
         supportedThemes: SUPPORTED_THEMES,
-        // ✅ NUEVO: Estados de cancelación
         isCancellable: themeState.isCancellable,
         pendingTheme: themeState.pendingTheme
     };
 }
 
-// ========================================
-// FUNCIONES DE DEBUG
-// ========================================
+// ========== DEBUG FUNCTIONS ==========
 
 function debugThemeManager() {
     console.group('🐛 Theme Manager Debug');
@@ -497,9 +448,7 @@ function debugThemeManager() {
     console.groupEnd();
 }
 
-// ========================================
-// EXPORTS (SIMPLIFICADOS Y LIMPIOS)
-// ========================================
+// ========== EXPORTS ==========
 
 export {
     initThemeManager,
@@ -519,7 +468,6 @@ export {
     setTranslationFunction,
     setThemeChangeCallback,
     
-    // ✅ FUNCIÓN PARA RESETEAR ESTADOS (LLAMADA POR MODULE-MANAGER)
     resetThemeStates,
     
     debugThemeManager
