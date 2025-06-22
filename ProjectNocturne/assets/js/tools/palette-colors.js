@@ -425,6 +425,9 @@ function loadStoredData() {
         }
 
         if (!PALETTE_PREMIUM_FEATURES) {
+            let wasModified = false;
+
+            // Paso 1: Resetear el color activo si era premium.
             if (isGradientColor(colorSystemState.currentColor)) {
                 console.log('🎨 Premium features disabled. Active gradient color found. Resetting to auto.');
                 colorSystemState.currentColor = 'auto';
@@ -433,13 +436,37 @@ function loadStoredData() {
                 localStorage.setItem(COLOR_SYSTEM_CONFIG.activeColorSectionKey, 'auto');
             }
 
+            // Paso 2: Filtrar colores premium de la lista de recientes.
+            const initialRecentCount = colorSystemState.recentColors.length;
             const nonGradientRecents = colorSystemState.recentColors.filter(
                 color => !isGradientColor(color.hex)
             );
 
-            if (nonGradientRecents.length < colorSystemState.recentColors.length) {
+            if (nonGradientRecents.length < initialRecentCount) {
                 console.log('🎨 Premium features disabled. Removing gradient colors from recent list.');
                 colorSystemState.recentColors = nonGradientRecents;
+                wasModified = true;
+            }
+
+            // Paso 3: Si el color activo AHORA es 'auto' (porque se reseteó o ya lo era),
+            // nos aseguramos de que esté al principio de la lista de recientes.
+            if (colorSystemState.currentColor === 'auto') {
+                const autoColorHex = getAutoColor();
+                const existingIndex = colorSystemState.recentColors.findIndex(c => c.hex === autoColorHex);
+
+                // Si el color 'auto' existe pero no está al principio, lo movemos.
+                if (existingIndex > 0) {
+                    const [item] = colorSystemState.recentColors.splice(existingIndex, 1);
+                    colorSystemState.recentColors.unshift(item);
+                    wasModified = true;
+                }
+            }
+            
+            // Paso 4: Si la lista quedó vacía, la inicializamos (solución anterior).
+            if (colorSystemState.recentColors.length === 0) {
+                initializeDefaultRecentColors(); // Esta función ya guarda los cambios.
+            } else if (wasModified) {
+                // Si hubo cualquier otra modificación (filtrado o reordenamiento), guardamos el estado final.
                 saveRecentColors();
             }
         }
