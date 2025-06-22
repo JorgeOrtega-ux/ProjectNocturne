@@ -31,10 +31,7 @@
                                         data-translate="auto"
                                         data-translate-category="tooltips"
                                         data-translate-target="tooltip">
-                                        <div class="color auto-color">
-                                            <!-- ✅ SIMPLIFICADO: Solo la letra A, sin estilos inline complejos -->
-                                            <span>A</span>
-                                        </div>
+                                        <div class="color auto-color"></div>
                                     </div>
                                     <div class="color-content" data-color="coral_red" data-section="mainColors" data-hex="#ff5555">
                                         <div class="color coralred-color"></div>

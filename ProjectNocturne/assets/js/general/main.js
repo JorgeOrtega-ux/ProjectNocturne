@@ -98,6 +98,13 @@ function logSectionStates() {
 }
 
 function activateSection(sectionName, showLog) {
+    // =========> INICIO DE LA MODIFICACIÓN <=========
+    // Si la sección que se quiere activar ya es la activa, no hagas nada.
+    if (activeSectionStates[sectionName] === true) {
+        return; 
+    }
+    // =========> FIN DE LA MODIFICACIÓN <=========
+
     if (showLog === undefined) showLog = true;
 
     const sections = Object.keys(activeSectionStates);
