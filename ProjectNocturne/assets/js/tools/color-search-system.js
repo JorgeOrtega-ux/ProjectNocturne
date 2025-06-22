@@ -10,7 +10,8 @@ const COLOR_SEARCH_CONFIG = {
     mainColorsWrapper: '[data-colors-wrapper="main"]',
     searchColorsWrapper: '[data-colors-wrapper="search"]',
     maxResultsPerSection: 18,
-    debounceDelay: 300
+    debounceDelay: 300,
+    SEARCH_STRICT_LANGUAGE: true // true = solo busca en el idioma actual, false = busca en todos los idiomas como fallback.
 };
 
 // ========== NEW MULTILINGUAL COLOR DATABASE ==========
@@ -453,36 +454,35 @@ function getBaseColorFromQuery(query) {
     const lang = (typeof window.getCurrentLanguage === 'function') ? window.getCurrentLanguage() : 'en-us';
     const currentDb = COLOR_DATABASES[lang] || COLOR_DATABASES['en-us'];
 
+    // 1. Búsqueda exacta en la base de datos del idioma actual.
     if (currentDb[lowerQuery]) {
         return currentDb[lowerQuery];
     }
 
-    for (const dbLang in COLOR_DATABASES) {
-        if (Object.prototype.hasOwnProperty.call(COLOR_DATABASES, dbLang)) {
-            const db = COLOR_DATABASES[dbLang];
-            if (db[lowerQuery]) {
-                return db[lowerQuery];
-            }
-        }
-    }
-    
-    for (const dbLang in COLOR_DATABASES) {
-        if (Object.prototype.hasOwnProperty.call(COLOR_DATABASES, dbLang)) {
-            const db = COLOR_DATABASES[dbLang];
-            for (const [name, data] of Object.entries(db)) {
-                if (name.includes(lowerQuery) || lowerQuery.includes(name)) {
-                    return data;
+    // 2. Si la búsqueda estricta está desactivada, buscar de forma exacta en otros idiomas.
+    if (!COLOR_SEARCH_CONFIG.SEARCH_STRICT_LANGUAGE) {
+        for (const dbLang in COLOR_DATABASES) {
+            if (Object.prototype.hasOwnProperty.call(COLOR_DATABASES, dbLang)) {
+                const db = COLOR_DATABASES[dbLang];
+                if (db[lowerQuery]) {
+                    return db[lowerQuery];
                 }
             }
         }
     }
-
-    try {
-        const color = chroma(lowerQuery);
-        return { hex: color.hex(), key: null };
-    } catch (error) {
+    
+    // 3. Como último recurso, intentar interpretar el color con chroma.js,
+    //    PERO solo si la búsqueda estricta está desactivada O si el idioma actual es inglés.
+    if (!COLOR_SEARCH_CONFIG.SEARCH_STRICT_LANGUAGE || lang === 'en-us') {
+        try {
+            const color = chroma(lowerQuery);
+            return { hex: color.hex(), key: null };
+        } catch (error) {
+            // Ignorar errores de chroma si no es un nombre de color válido
+        }
     }
 
+    // 4. Si no se encontró nada, devolver null.
     return null;
 }
 
